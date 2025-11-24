@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from dspy_code.core.exceptions import ExportError, ImportError, InvalidFormatError
+from dspy_code.core.exceptions import ExportError, ImportError
 from dspy_code.export import ExportImportHandler, PackageBuilder, PackageMetadata
 
 
