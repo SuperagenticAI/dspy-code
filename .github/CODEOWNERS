@@ -1,0 +1,20 @@
+# Code Owners
+# These owners will be automatically requested for review when someone opens a pull request.
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @Shashikant86
+
+# Core package code
+/dspy_code/ @Shashikant86
+
+# CI/CD workflows
+/.github/ @Shashikant86
+
+# Documentation
+/docs/ @Shashikant86
+*.md @Shashikant86
+
+# Configuration files
+pyproject.toml @Shashikant86
+.pre-commit-config.yaml @Shashikant86
