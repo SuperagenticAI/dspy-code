@@ -21,7 +21,7 @@
 <a id=__codelineno-2-6 name=__codelineno-2-6 href=#__codelineno-2-6></a>python<span class=w> </span>-m<span class=w> </span>venv<span class=w> </span>.venv
 <a id=__codelineno-2-7 name=__codelineno-2-7 href=#__codelineno-2-7></a>
 <a id=__codelineno-2-8 name=__codelineno-2-8 href=#__codelineno-2-8></a><span class=c1># 3. Activate it</span>
-<a id=__codelineno-2-9 name=__codelineno-2-9 href=#__codelineno-2-9></a><span class=nb>source</span><span class=w> </span>.venv/bin/activate
+<a id=__codelineno-2-9 name=__codelineno-2-9 href=#__codelineno-2-9></a><span class=nb>source</span><span class=w> </span>.venv/bin/activate<span class=w>  </span><span class=c1># For fish: source .venv/bin/activate.fish</span>
 <a id=__codelineno-2-10 name=__codelineno-2-10 href=#__codelineno-2-10></a>
 <a id=__codelineno-2-11 name=__codelineno-2-11 href=#__codelineno-2-11></a><span class=c1># 4. Install dspy-code (goes into .venv/ here)</span>
 <a id=__codelineno-2-12 name=__codelineno-2-12 href=#__codelineno-2-12></a>pip<span class=w> </span>install<span class=w> </span>dspy-code
@@ -67,7 +67,7 @@
 <a id=__codelineno-10-10 name=__codelineno-10-10 href=#__codelineno-10-10></a>1. Create a dedicated project directory
 <a id=__codelineno-10-11 name=__codelineno-10-11 href=#__codelineno-10-11></a>2. Navigate to it: cd ~/my-dspy-project
 <a id=__codelineno-10-12 name=__codelineno-10-12 href=#__codelineno-10-12></a>3. Create virtual environment: python -m venv .venv
-<a id=__codelineno-10-13 name=__codelineno-10-13 href=#__codelineno-10-13></a>4. Activate it: source .venv/bin/activate
+<a id=__codelineno-10-13 name=__codelineno-10-13 href=#__codelineno-10-13></a>4. Activate it: source .venv/bin/activate  # For fish: source .venv/bin/activate.fish
 <a id=__codelineno-10-14 name=__codelineno-10-14 href=#__codelineno-10-14></a>5. Install dspy-code: pip install dspy-code
 <a id=__codelineno-10-15 name=__codelineno-10-15 href=#__codelineno-10-15></a>6. Then run: dspy-code
 <a id=__codelineno-10-16 name=__codelineno-10-16 href=#__codelineno-10-16></a>
@@ -107,7 +107,7 @@
 <a id=__codelineno-14-8 name=__codelineno-14-8 href=#__codelineno-14-8></a><span class=c1># ✅ Good - venv inside project</span>
 <a id=__codelineno-14-9 name=__codelineno-14-9 href=#__codelineno-14-9></a><span class=nb>cd</span><span class=w> </span>~/projects/my-project
 <a id=__codelineno-14-10 name=__codelineno-14-10 href=#__codelineno-14-10></a>python<span class=w> </span>-m<span class=w> </span>venv<span class=w> </span>.venv
-<a id=__codelineno-14-11 name=__codelineno-14-11 href=#__codelineno-14-11></a><span class=nb>source</span><span class=w> </span>.venv/bin/activate
+<a id=__codelineno-14-11 name=__codelineno-14-11 href=#__codelineno-14-11></a><span class=nb>source</span><span class=w> </span>.venv/bin/activate<span class=w>  </span><span class=c1># For fish: source .venv/bin/activate.fish</span>
 <a id=__codelineno-14-12 name=__codelineno-14-12 href=#__codelineno-14-12></a>dspy-code
 </code></pre></div> <h3 id=3-add-to-gitignore>3. Add to .gitignore</h3> <p>Protect sensitive data:</p> <div class=highlight><pre><span></span><code><a id=__codelineno-15-1 name=__codelineno-15-1 href=#__codelineno-15-1></a># Virtual environment
 <a id=__codelineno-15-2 name=__codelineno-15-2 href=#__codelineno-15-2></a>.venv/
