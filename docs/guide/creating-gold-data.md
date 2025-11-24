@@ -718,7 +718,7 @@ Add metadata file:
 ```yaml
 # data/sentiment_metadata.yaml
 dataset: sentiment_v3
-created: 2024-01-15
+created: 2025-01-15
 total_examples: 150
 source: AI-generated + manual review + user feedback
 distribution:

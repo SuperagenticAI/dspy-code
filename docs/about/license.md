@@ -6,7 +6,7 @@ DSPy Code is released under the **MIT License**.
 
 ## MIT License
 
-Copyright (c) 2024 Superagentic AI
+Copyright (c) 2025 Superagentic AI
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -80,6 +80,6 @@ For license questions, please contact:
 
 ---
 
-**Copyright © 2024 Superagentic AI. All rights reserved.**
+**Copyright © 2025 Superagentic AI. All rights reserved.**
 
 *DSPy Code is built by [Superagentic AI](https://super-agentic.ai) - The Home of Agentic AI*

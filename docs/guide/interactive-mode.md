@@ -411,18 +411,18 @@ See all saved sessions:
 Saved Sessions:
 
 1. my-rag-project
-   Created: 2024-01-15 14:30
-   Last modified: 2024-01-15 16:45
+   Created: 2025-01-15 14:30
+   Last modified: 2025-01-15 16:45
    Size: 45 KB
 
 2. sentiment-analyzer
-   Created: 2024-01-14 10:20
-   Last modified: 2024-01-14 12:30
+   Created: 2025-01-14 10:20
+   Last modified: 2025-01-14 12:30
    Size: 23 KB
 
 3. email-classifier
-   Created: 2024-01-13 09:15
-   Last modified: 2024-01-13 11:00
+   Created: 2025-01-13 09:15
+   Last modified: 2025-01-13 11:00
    Size: 31 KB
 ```
 

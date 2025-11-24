@@ -194,11 +194,8 @@
   margin-left: 0.4rem;
 }
 
-/* Theme Toggle Button - Single toggle icon that switches between dark/light */
-/* Material creates one button that changes icon based on current theme */
-.md-header__button[for="__palette"],
-.md-header__button[for="__palette_1"],
-.md-header__button[for="__palette_2"] {
+/* Theme Toggle Button - Visible and styled */
+.md-header__button[for^="__palette"] {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -208,37 +205,23 @@
   margin: 0 0.2rem !important;
   border-radius: 0.25rem !important;
   transition: all 0.2s ease !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-/* Hide ALL duplicate theme toggle buttons - only show the FIRST one */
-.md-header__button[for="__palette"]:not(:first-of-type),
-.md-header__button[for="__palette_1"]:not(:first-of-type),
-.md-header__button[for="__palette_2"],
-.md-header__inner > .md-header__button[for="__palette"]:not(:first-of-type),
-.md-header__inner > .md-header__button[for="__palette_1"]:not(:first-of-type),
-.md-header__button[for="__palette"] ~ .md-header__button[for="__palette"],
-.md-header__button[for="__palette"] ~ .md-header__button[for="__palette_1"],
-.md-header__button[for="__palette"] ~ .md-header__button[for="__palette_2"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
+/* Show ONLY the first theme toggle button - hide all others */
+.md-header__button[for^="__palette"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-/* Ensure only ONE theme toggle is visible in the header */
-.md-header__inner .md-header__button[for^="__palette"]:nth-of-type(n+2) {
+/* Hide the second palette toggle (Material creates one per palette) */
+.md-header__button[for="__palette_1"] {
   display: none !important;
 }
 
-/* Count all palette buttons and hide all but first */
-.md-header__inner .md-header__button[for^="__palette"]:nth-child(n+2) {
-  display: none !important;
-}
-
-/* Hide theme toggle in any other location (drawer, sidebar, etc.) */
+/* Hide theme toggle in drawer/sidebar only (not in header) */
 .md-drawer .md-header__button[for^="__palette"],
 .md-sidebar .md-header__button[for^="__palette"],
 .md-nav .md-header__button[for^="__palette"] {

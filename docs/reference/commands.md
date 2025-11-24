@@ -84,7 +84,7 @@ Connect to a language model for code generation and execution.
 ```
 /connect ollama llama3.1:8b
 /connect openai gpt-4o
-/connect anthropic claude-3-5-sonnet-20241022
+/connect anthropic claude-3-5-sonnet-20251022
 /connect gemini gemini-pro
 ```
 

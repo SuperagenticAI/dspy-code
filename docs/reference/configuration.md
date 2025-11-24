@@ -35,7 +35,7 @@ models:
 
     - name: anthropic-claude
       type: anthropic
-      model: claude-3-5-sonnet-20241022
+      model: claude-3-5-sonnet-20251022
       api_key: ${ANTHROPIC_API_KEY}
 
 mcp_servers:
@@ -152,7 +152,7 @@ Each provider has the following structure:
 ```yaml
 - name: claude
   type: anthropic
-  model: claude-3-5-sonnet-20241022
+  model: claude-3-5-sonnet-20251022
   api_key: ${ANTHROPIC_API_KEY}
 ```
 

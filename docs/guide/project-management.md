@@ -176,7 +176,7 @@ Active configuration for your project:
 # Project Information
 project_name: customer-support-ai
 dspy_version: "3.0.4"
-created_at: "2024-01-15T10:30:00"
+created_at: "2025-01-15T10:30:00"
 
 # Model Configuration
 models:
@@ -645,7 +645,7 @@ Project Context:
 
 Name: customer-support-ai
 DSPy Version: 3.0.4
-Created: 2024-01-15
+Created: 2025-01-15
 
 Components:
   - 5 Signatures
