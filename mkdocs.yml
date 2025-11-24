@@ -1,0 +1,158 @@
+site_name: DSPy Code
+site_description: AI-Powered Interactive Development Environment for DSPy
+site_author: Superagentic AI
+site_url: https://superagenticai.github.io/dspy-code/
+
+repo_name: SuperagenticAI/dspy-code
+repo_url: https://github.com/SuperagenticAI/dspy-code
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: resource/dspy-code.png
+  favicon: resource/dspy-code.png
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      background: white
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      background: black
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+  icon:
+    repo: fontawesome/brands/github
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/light-bulb-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search:
+      lang: en
+  - minify:
+      minify_html: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/superagentic-ai/dspy-code
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/dspy-code/
+
+  generator: false
+
+  version:
+    provider: mike
+
+copyright: Copyright &copy; 2024 Superagentic AI. All rights reserved.
+
+nav:
+  - 🏠 Home: index.md
+  - 🚀 Getting Started:
+    - 📦 Installation: getting-started/installation.md
+    - ⚡ Quick Start: getting-started/quick-start.md
+    - 🎯 First Program: getting-started/first-program.md
+    - 💡 Understanding DSPy Code: getting-started/understanding.md
+
+  - 📚 User Guide:
+    - 💬 Interactive Mode: guide/interactive-mode.md
+    - 🗣️ Natural Language Commands: guide/natural-language-commands.md
+    - ⌨️ Slash Commands: guide/slash-commands.md
+    - ✨ Generating Code: guide/generating-code.md
+    - 🔌 Adapters: guide/adapters.md
+    - 🔍 Retrievers: guide/retrievers.md
+    - 🔌 Model Connection: guide/model-connection.md
+    - ✅ Code Validation: guide/validation.md
+    - 📊 Evaluation: guide/evaluation.md
+    - ⚡ Async & Streaming: guide/async-streaming.md
+    - ▶️ Running Programs: guide/running-programs.md
+    - 🎯 Optimization: guide/optimization.md
+    - 📁 Project Management: guide/project-management.md
+    - 📊 Creating Gold Data: guide/creating-gold-data.md
+
+  - 🎓 Tutorials:
+    - 😊 Build a Sentiment Analyzer: tutorials/sentiment-analyzer.md
+    - 🔍 Create a RAG System: tutorials/rag-system.md
+    - ❓ Question Answering: tutorials/question-answering.md
+    - 🧬 Optimize with GEPA: tutorials/gepa-optimization.md
+
+  - 📖 Reference:
+    - 📝 Command Reference: reference/commands.md
+    - ⚙️ Configuration: reference/configuration.md
+    - 📋 Templates: reference/templates.md
+    - 🔧 Troubleshooting: reference/troubleshooting.md
+    - ❓ FAQ: reference/faq.md
+
+  - 🚀 Advanced:
+    - 🔗 MCP Integration: advanced/mcp-integration.md
+    - 🧩 Custom Modules: advanced/custom-modules.md
+    - 🚢 Deployment: advanced/deployment.md
+    - 🔄 CI/CD Integration: advanced/cicd.md
+
+  - ℹ️ About:
+    - 📖 About DSPy Code: about/index.md
+    - 💡 Why DSPy Code?: about/why-dspy-code.md
+    - 📝 Changelog: about/changelog.md
+    - 🤝 Contributing: about/contributing.md
+    - 📄 License: about/license.md

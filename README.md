@@ -12,7 +12,7 @@
 
 *An interactive CLI tool for building, optimizing, and deploying DSPy applications*
 
-[📖 Documentation](https://superagenticai.github.io/dspy-code/) • [🚀 Quick Start](#-quick-start) • [💬 GitHub Discussions](https://github.com/SuperagenticAI/dspy-code/discussions)
+[📖 Documentation](https://superagenticai.github.io/dspy-code/)
 
 </div>
 
@@ -20,7 +20,7 @@
 
 ## ✨ What is DSPy Code?
 
-DSPy Code is an **interactive development environment** that transforms how you learn and build with DSPy. Built as an intelligent CLI tool, it provides natural language interactions, code generation, optimization workflows, and comprehensive validation—all designed specifically for DSPy development.
+DSPy Code is an **interactive development environment** that transforms how you learn and build with DSPy. Built as an intelligent CLI tool, it provides natural language interactions, code generation, optimization workflows, and comprehensive validation, all designed specifically for DSPy development.
 
 **Learn as you build.** Whether you're a complete beginner or a DSPy expert, the CLI adapts to your level and guides you through every step.
 

@@ -1,0 +1,1546 @@
+/* Custom styles for DSPy Code Documentation */
+
+/* Dark mode - Pure black background */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #000000;
+  --md-default-bg-color--light: #0a0a0a;
+  --md-default-fg-color: #ffffff;
+  --md-default-fg-color--light: #e0e0e0;
+  --md-code-bg-color: #1a1a1a;
+  --md-code-fg-color: #e0e0e0;
+  --md-primary-fg-color: #ffffff;
+  --md-primary-bg-color: #000000;
+}
+
+/* Light mode - Pure white background */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #ffffff;
+  --md-default-bg-color--light: #fafafa;
+  --md-default-fg-color: #000000;
+  --md-default-fg-color--light: #1a1a1a;
+  --md-primary-fg-color: #000000;
+  --md-primary-bg-color: #ffffff;
+}
+
+/* ============================================
+   HEADER NAVIGATION - PROFESSIONAL ALIGNMENT
+   ============================================ */
+
+/* Header Container - Flexbox Layout */
+.md-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.6rem;
+  padding: 0 0.8rem;
+  box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1), 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode header - Black background */
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #000000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Light mode header - White background */
+[data-md-color-scheme="default"] .md-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Header Inner Container - Flexbox Layout */
+.md-header__inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 0.8rem !important;
+  gap: 0.8rem;
+}
+
+/* Left Section: Logo + Title */
+.md-header__inner > .md-header__button:first-child,
+.md-header__inner > .md-header__title {
+  flex-shrink: 0;
+}
+
+/* Right Section Container */
+.md-header__inner > .md-search,
+.md-header__inner > .md-header__button[for="__palette"],
+.md-header__inner > .md-header__source {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Left Section: Logo + Title */
+.md-header__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0.4rem;
+  transition: all 0.2s ease;
+  border-radius: 0.25rem;
+}
+
+/* Logo Button */
+.md-header__button.md-logo {
+  margin-right: 0.4rem;
+  padding: 0.2rem;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  width: 2rem;
+  height: 2rem;
+  display: block;
+}
+
+/* Title - Static "DSPy Code" Text (Not a link) */
+.md-header__title {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0 0.6rem;
+  white-space: nowrap;
+  text-decoration: none;
+  pointer-events: none; /* Make it non-clickable */
+  cursor: default;
+}
+
+.md-header__title a {
+  text-decoration: none;
+  pointer-events: none;
+  cursor: default;
+}
+
+[data-md-color-scheme="slate"] .md-header__title {
+  color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .md-header__title a {
+  color: #ffffff;
+}
+
+[data-md-color-scheme="default"] .md-header__title {
+  color: #000000;
+}
+
+[data-md-color-scheme="default"] .md-header__title a {
+  color: #000000;
+}
+
+.md-header__title:hover {
+  opacity: 1; /* No hover effect since it's static */
+}
+
+/* Right Section: Search + Theme Toggle + GitHub - Auto spacing */
+.md-header__inner {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.md-header__inner > *:last-child {
+  margin-left: auto;
+}
+
+/* Search Bar */
+.md-search {
+  position: relative;
+  margin: 0 0.4rem;
+}
+
+.md-search__form {
+  display: flex;
+  align-items: center;
+  border-radius: 1.25rem;
+  background-color: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--light);
+  padding: 0.4rem 0.8rem;
+  min-width: 12rem;
+  max-width: 20rem;
+  transition: all 0.2s ease;
+}
+
+.md-search__form:hover {
+  border-color: var(--md-primary-fg-color);
+}
+
+.md-search__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--md-default-fg-color);
+  font-size: 0.9rem;
+  padding: 0.2rem 0.4rem;
+  outline: none;
+}
+
+.md-search__input::placeholder {
+  color: var(--md-default-fg-color--light);
+  opacity: 0.6;
+}
+
+.md-search__icon {
+  color: var(--md-default-fg-color--light);
+  margin-left: 0.4rem;
+}
+
+/* Theme Toggle Button - Single toggle icon that switches between dark/light */
+/* Material creates one button that changes icon based on current theme */
+.md-header__button[for="__palette"],
+.md-header__button[for="__palette_1"],
+.md-header__button[for="__palette_2"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2.4rem !important;
+  height: 2.4rem !important;
+  padding: 0 !important;
+  margin: 0 0.2rem !important;
+  border-radius: 0.25rem !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Hide ALL duplicate theme toggle buttons - only show the FIRST one */
+.md-header__button[for="__palette"]:not(:first-of-type),
+.md-header__button[for="__palette_1"]:not(:first-of-type),
+.md-header__button[for="__palette_2"],
+.md-header__inner > .md-header__button[for="__palette"]:not(:first-of-type),
+.md-header__inner > .md-header__button[for="__palette_1"]:not(:first-of-type),
+.md-header__button[for="__palette"] ~ .md-header__button[for="__palette"],
+.md-header__button[for="__palette"] ~ .md-header__button[for="__palette_1"],
+.md-header__button[for="__palette"] ~ .md-header__button[for="__palette_2"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ensure only ONE theme toggle is visible in the header */
+.md-header__inner .md-header__button[for^="__palette"]:nth-of-type(n+2) {
+  display: none !important;
+}
+
+/* Count all palette buttons and hide all but first */
+.md-header__inner .md-header__button[for^="__palette"]:nth-child(n+2) {
+  display: none !important;
+}
+
+/* Hide theme toggle in any other location (drawer, sidebar, etc.) */
+.md-drawer .md-header__button[for^="__palette"],
+.md-sidebar .md-header__button[for^="__palette"],
+.md-nav .md-header__button[for^="__palette"] {
+  display: none !important;
+}
+
+[data-md-color-scheme="slate"] .md-header__button {
+  color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .md-header__button:hover {
+  color: #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="slate"] .md-header__button svg {
+  color: #ffffff;
+  fill: #ffffff;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+[data-md-color-scheme="default"] .md-header__button {
+  color: #000000;
+}
+
+[data-md-color-scheme="default"] .md-header__button:hover {
+  color: #1a1a1a;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-md-color-scheme="default"] .md-header__button svg {
+  color: #000000;
+  fill: #000000;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* GitHub Link - Properly aligned container */
+.md-header__source {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.6rem !important;
+  padding: 0.5rem 0.8rem !important;
+  margin: 0 0.2rem !important;
+  border-radius: 0.25rem !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  max-width: none !important;
+  overflow: visible !important;
+  height: auto !important;
+  line-height: 1.5 !important;
+}
+
+[data-md-color-scheme="slate"] .md-header__source {
+  color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .md-header__source:hover {
+  color: #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="default"] .md-header__source {
+  color: #000000;
+}
+
+[data-md-color-scheme="default"] .md-header__source:hover {
+  color: #1a1a1a;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* GitHub Icon - Larger and properly aligned */
+.md-source__icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1.6rem !important;
+  height: 1.6rem !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+
+.md-source__icon svg {
+  width: 1.6rem !important;
+  height: 1.6rem !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+[data-md-color-scheme="slate"] .md-source__icon svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+[data-md-color-scheme="default"] .md-source__icon svg {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+/* GitHub Repository Text - Properly aligned with icon */
+.md-source__repository {
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  height: 1.6rem !important;
+}
+
+[data-md-color-scheme="slate"] .md-source__repository {
+  color: #ffffff !important;
+}
+
+[data-md-color-scheme="default"] .md-source__repository {
+  color: #000000 !important;
+}
+
+/* Ensure proper spacing and alignment in header */
+.md-header__inner {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+}
+
+/* Logo spacing */
+.md-header__button.md-logo {
+  margin-right: 0 !important;
+}
+
+/* Title spacing */
+.md-header__title {
+  margin: 0 !important;
+  padding-left: 0.4rem !important;
+}
+
+/* Search positioning */
+.md-search {
+  margin-left: auto !important;
+  margin-right: 0.4rem !important;
+}
+
+/* Theme toggle and GitHub positioning */
+.md-header__button[for="__palette"]:first-of-type,
+.md-header__source {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Hide any theme toggle in drawer/sidebar if it exists */
+.md-drawer .md-header__button[for="__palette"],
+.md-sidebar .md-header__button[for="__palette"],
+.md-nav .md-header__button[for="__palette"] {
+  display: none !important;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 76.1875em) {
+  .md-header {
+    padding: 0 0.4rem;
+  }
+
+  .md-header__title {
+    font-size: 1.1rem;
+    padding: 0 0.4rem;
+  }
+
+  .md-search {
+    margin: 0 0.2rem;
+  }
+
+  .md-search__form {
+    min-width: 8rem;
+    max-width: 12rem;
+  }
+
+  .md-header__source {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .md-source__repository {
+    display: none; /* Hide text on mobile, show only icon */
+  }
+}
+
+/* Ensure all header elements are properly aligned */
+.md-header > * {
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation tabs styling - Header top menu - Fully visible */
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #000000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+[data-md-color-scheme="slate"] .md-tabs__list {
+  overflow: visible !important;
+  height: auto !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+}
+
+[data-md-color-scheme="slate"] .md-tabs__item {
+  height: auto !important;
+}
+
+[data-md-color-scheme="slate"] .md-tabs__link {
+  color: #ffffff !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  padding: 0.9rem 1.1rem !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  display: block !important;
+  height: auto !important;
+}
+
+[data-md-color-scheme="slate"] .md-tabs__link:hover {
+  color: #e0e0e0 !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-md-color-scheme="slate"] .md-tabs__link--active {
+  color: #ffffff !important;
+  border-bottom-color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+[data-md-color-scheme="default"] .md-tabs {
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+[data-md-color-scheme="default"] .md-tabs__list {
+  overflow: visible !important;
+  height: auto !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+}
+
+[data-md-color-scheme="default"] .md-tabs__item {
+  height: auto !important;
+}
+
+[data-md-color-scheme="default"] .md-tabs__link {
+  color: #000000 !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  padding: 0.9rem 1.1rem !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  display: block !important;
+  height: auto !important;
+}
+
+[data-md-color-scheme="default"] .md-tabs__link:hover {
+  color: #1a1a1a !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-md-color-scheme="default"] .md-tabs__link--active {
+  color: #000000 !important;
+  border-bottom-color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+/* Search bar styling */
+[data-md-color-scheme="slate"] .md-search__input {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .md-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-md-color-scheme="slate"] .md-search__input + .md-search__icon {
+  color: #ffffff;
+}
+
+[data-md-color-scheme="default"] .md-search__input {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #000000;
+}
+
+[data-md-color-scheme="default"] .md-search__input::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-md-color-scheme="default"] .md-search__input + .md-search__icon {
+  color: #000000;
+}
+
+/* Ensure all icons in header are visible */
+[data-md-color-scheme="slate"] .md-header__button svg,
+[data-md-color-scheme="slate"] .md-header__button::before {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+[data-md-color-scheme="default"] .md-header__button svg,
+[data-md-color-scheme="default"] .md-header__button::before {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+/* GitHub Repository Link Styling */
+/* Dark mode - GitHub icon and text */
+[data-md-color-scheme="slate"] .md-header__source {
+  color: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .md-header__source:hover {
+  color: #e0e0e0 !important;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="slate"] .md-header__source svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .md-header__source .md-source__repository {
+  color: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .md-source__repository {
+  color: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .md-source__icon svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .md-source__icon::before {
+  color: #ffffff !important;
+}
+
+/* Light mode - GitHub icon and text */
+[data-md-color-scheme="default"] .md-header__source {
+  color: #000000 !important;
+}
+
+[data-md-color-scheme="default"] .md-header__source:hover {
+  color: #1a1a1a !important;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-md-color-scheme="default"] .md-header__source svg {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+[data-md-color-scheme="default"] .md-header__source .md-source__repository {
+  color: #000000 !important;
+}
+
+[data-md-color-scheme="default"] .md-source__repository {
+  color: #000000 !important;
+}
+
+[data-md-color-scheme="default"] .md-source__icon svg {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+[data-md-color-scheme="default"] .md-source__icon::before {
+  color: #000000 !important;
+}
+
+/* Ensure GitHub icon is always visible */
+.md-source__icon {
+  opacity: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.md-source__icon svg {
+  opacity: 1 !important;
+  display: block !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+.md-source__repository {
+  opacity: 1 !important;
+  font-weight: 500;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  max-width: none !important;
+  width: auto !important;
+  font-size: 1.1em !important;
+}
+
+/* Repository source link container */
+.md-header__source {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: none !important;
+  width: auto !important;
+  flex-shrink: 0 !important;
+}
+
+.md-source {
+  max-width: none !important;
+  width: auto !important;
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Align GitHub icon and text properly - Consolidated above */
+
+.md-header__source:hover {
+  text-decoration: none;
+}
+
+/* Ensure the source link text is visible */
+[data-md-color-scheme="slate"] .md-source__repository--active,
+[data-md-color-scheme="slate"] .md-source__repository {
+  color: #ffffff !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+[data-md-color-scheme="default"] .md-source__repository--active,
+[data-md-color-scheme="default"] .md-source__repository {
+  color: #000000 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure icon and repository text are properly aligned */
+.md-source {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+  height: 1.6rem !important;
+  line-height: 1.5 !important;
+}
+
+.md-source__icon,
+.md-source__repository {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
+}
+
+/* Hero Section - Beautiful Enhanced Design - Full Space Usage */
+.hero-section {
+  position: relative;
+  text-align: center;
+  padding: 2em 2em 4em 2em;
+  margin: 0 0 2em 0;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(147, 51, 234, 0.2) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.2) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+  animation: backgroundPulse 10s ease-in-out infinite;
+  z-index: 0;
+}
+
+.hero-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, rgba(147, 51, 234, 0.3), transparent),
+    radial-gradient(2px 2px at 60% 70%, rgba(236, 72, 153, 0.3), transparent),
+    radial-gradient(1px 1px at 50% 50%, rgba(249, 115, 22, 0.3), transparent),
+    radial-gradient(1px 1px at 80% 10%, rgba(147, 51, 234, 0.2), transparent),
+    radial-gradient(2px 2px at 90% 60%, rgba(236, 72, 153, 0.2), transparent);
+  background-size: 200% 200%;
+  animation: particleMove 20s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes particleMove {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+.hero-gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  animation: orbFloat 15s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.4), transparent);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.4), transparent);
+  bottom: 15%;
+  right: 15%;
+  animation-delay: 5s;
+}
+
+.orb-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.3), transparent);
+  top: 50%;
+  right: 10%;
+  animation-delay: 10s;
+}
+
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+@keyframes backgroundPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 70vh;
+  gap: 2em;
+}
+
+.hero-top {
+  flex: 0 0 auto;
+}
+
+.hero-middle {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2em;
+}
+
+.hero-bottom {
+  flex: 0 0 auto;
+}
+
+.hero-title {
+  margin-bottom: 0.5em;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.hero-logo {
+  margin: 1.5em 0;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.hero-subtitle {
+  animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.hero-description {
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.hero-tags {
+  animation: fadeInUp 1s ease-out 0.8s both;
+}
+
+.hero-cta {
+  margin-top: 1.5em;
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease-out 1s both;
+  padding: 1em 0;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animated-logo {
+  width: 320px;
+  height: auto;
+  animation: logoFloat 3s ease-in-out infinite, logoGlow 4s ease-in-out infinite, logoRotate 20s linear infinite;
+  filter: drop-shadow(0 15px 40px rgba(168, 85, 247, 0.5)) drop-shadow(0 0 30px rgba(236, 72, 153, 0.4));
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.animated-logo:hover {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 20px 50px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 40px rgba(236, 72, 153, 0.5));
+}
+
+@keyframes logoRotate {
+  0% {
+    filter: drop-shadow(0 15px 40px rgba(168, 85, 247, 0.5)) drop-shadow(0 0 30px rgba(236, 72, 153, 0.4)) hue-rotate(0deg);
+  }
+  50% {
+    filter: drop-shadow(0 15px 40px rgba(236, 72, 153, 0.5)) drop-shadow(0 0 30px rgba(249, 115, 22, 0.4)) hue-rotate(90deg);
+  }
+  100% {
+    filter: drop-shadow(0 15px 40px rgba(168, 85, 247, 0.5)) drop-shadow(0 0 30px rgba(236, 72, 153, 0.4)) hue-rotate(0deg);
+  }
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+
+/* Gradient text animation - Purple, Pink, Orange */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-text-purple-pink-orange {
+  background: linear-gradient(
+    90deg,
+    #9333ea 0%,
+    #c026d3 25%,
+    #ec4899 50%,
+    #f97316 75%,
+    #9333ea 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientShift 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 5.5em;
+  margin: 0 0 0.5em 0;
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  font-size: 4.5em;
+  margin: 0.5em 0 0.3em 0;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.hero-description {
+  font-size: 1.6em;
+  color: var(--md-default-fg-color--light);
+  margin: 0;
+  opacity: 0.95;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* Hero Features Grid */
+.hero-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5em;
+  margin: 2em auto;
+  max-width: 900px;
+  width: 100%;
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8em;
+  padding: 1.5em 1em;
+  background: rgba(147, 51, 234, 0.08);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.feature-item:hover {
+  transform: translateY(-8px) scale(1.05);
+  background: rgba(147, 51, 234, 0.15);
+  border-color: rgba(147, 51, 234, 0.4);
+  box-shadow: 0 15px 40px rgba(147, 51, 234, 0.3);
+}
+
+.feature-icon {
+  font-size: 2.5em;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(147, 51, 234, 0.3));
+}
+
+.feature-text {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+  letter-spacing: 0.01em;
+}
+
+.hero-tags {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+  margin: 0;
+  flex-wrap: wrap;
+  padding: 1em 0;
+}
+
+.hero-tags .tag {
+  padding: 0.7em 1.8em;
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(236, 72, 153, 0.15));
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #9333ea, #ec4899, #f97316) 1;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1em;
+  color: var(--md-default-fg-color);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-tags .tag::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.hero-tags .tag:hover::before {
+  left: 100%;
+}
+
+.hero-tags .tag:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(147, 51, 234, 0.4);
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.25), rgba(236, 72, 153, 0.25));
+}
+
+.hero-tags .tag.tag-animated {
+  animation: tagFloat 3s ease-in-out infinite;
+}
+
+.hero-tags .tag.tag-animated:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.hero-tags .tag.tag-animated:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.hero-tags .tag.tag-animated:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.hero-tags .tag.tag-animated:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+@keyframes tagFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* CTA Buttons */
+.cta-button {
+  display: inline-block;
+  padding: 1em 2.5em;
+  font-size: 1.1em;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #9333ea, #ec4899, #f97316);
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: -1;
+}
+
+.cta-button:hover::before {
+  opacity: 1;
+}
+
+.cta-button.primary {
+  background: linear-gradient(135deg, #9333ea, #ec4899);
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3);
+}
+
+.cta-button.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(147, 51, 234, 0.5);
+  color: #ffffff;
+}
+
+.cta-button.secondary {
+  background: transparent;
+  color: var(--md-default-fg-color);
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #9333ea, #ec4899) 1;
+}
+
+.cta-button.secondary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3);
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(236, 72, 153, 0.1));
+}
+
+/* Animated gradient text (legacy support) */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(90deg, #7c3aed, #4f46e5, #6366f1, #8b5cf6);
+  background-size: 300% 300%;
+  animation: gradient 3s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced code blocks */
+.md-typeset code {
+  background-color: var(--md-code-bg-color);
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+}
+
+/* Enhanced buttons */
+.md-button {
+  border-radius: 50px;
+  padding: 0.8em 2em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.md-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+}
+
+.md-button--primary {
+  background: linear-gradient(90deg, #7c3aed, #4f46e5);
+  border: none;
+}
+
+/* Card styling */
+.md-typeset .grid.cards > * {
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.md-typeset .grid.cards > *:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+}
+
+/* Admonition styling */
+.md-typeset .admonition {
+  border-radius: 10px;
+  border-left-width: 4px;
+}
+
+/* Logo styling - ensure visibility in both modes */
+.md-header__button.md-logo img {
+  filter: none;
+  opacity: 1;
+}
+
+[data-md-color-scheme="slate"] .md-header__button.md-logo img {
+  filter: brightness(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+[data-md-color-scheme="default"] .md-header__button.md-logo img {
+  filter: brightness(1) drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+}
+
+/* Navigation styling - Left sidebar menu - Medium font */
+.md-nav {
+  font-size: 1.1em !important;
+}
+
+/* Hide duplicate "DSPy Code Documentation" text in sidebar */
+.md-sidebar .md-nav__title:first-child,
+.md-sidebar__scrollwrap > .md-nav__title:first-child,
+.md-sidebar .md-nav__title[data-md-component="sidebar-title"] {
+  display: none !important;
+}
+
+/* Hide site name title that appears at top of sidebar */
+.md-sidebar .md-nav__title:first-of-type,
+.md-sidebar .md-nav__list:first-child > .md-nav__item:first-child > .md-nav__title {
+  display: none !important;
+}
+
+.md-nav__item {
+  font-size: 1.1em !important;
+}
+
+/* Hide duplicate section headers in navigation - Material theme shows section name twice */
+/* Hide ALL section links that are duplicates (they have href="#" or empty href) */
+.md-nav--primary .md-nav__link[href="#"],
+.md-nav--primary .md-nav__link[href="#getting-started"],
+.md-nav--primary .md-nav__link[href="#user-guide"],
+.md-nav--primary .md-nav__link[href="#tutorials"],
+.md-nav--primary .md-nav__link[href="#reference"],
+.md-nav--primary .md-nav__link[href="#advanced"],
+.md-nav--primary .md-nav__link[href="#about"],
+.md-nav--primary .md-nav__item--active > .md-nav__link[href="#"],
+.md-nav--primary .md-nav__item > .md-nav__link[href="#"],
+.md-nav--primary .md-nav__list > .md-nav__item > .md-nav__link[href="#"] {
+  display: none !important;
+}
+
+/* Hide duplicate section links that appear as second occurrence */
+.md-nav--primary .md-nav__item:has(.md-nav__title) > .md-nav__link {
+  display: none !important;
+}
+
+/* Hide section links that are siblings of section titles */
+.md-nav--primary .md-nav__item > .md-nav__link:not([href*=".md"]):not([href*="/"]) {
+  display: none !important;
+}
+
+/* Make ALL navigation titles the SAME size as links - consistent font size for ALL sections */
+.md-nav--primary .md-nav__list > .md-nav__item > .md-nav__title,
+.md-nav--primary .md-nav__item > .md-nav__title,
+.md-nav__item > .md-nav__title,
+.md-nav__title[for],
+.md-nav__title .md-nav__button,
+.md-nav__title {
+  font-size: 1.1em !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure ALL section titles are the same size - Getting Started, User Guide, Tutorials, Reference, Advanced, About */
+.md-nav--primary .md-nav__item[data-md-nav-item] > .md-nav__title,
+.md-nav--primary .md-nav__item:has(.md-nav__list) > .md-nav__title,
+.md-nav__title[for="getting-started"],
+.md-nav__title[for="user-guide"],
+.md-nav__title[for="tutorials"],
+.md-nav__title[for="reference"],
+.md-nav__title[for="advanced"],
+.md-nav__title[for="about"] {
+  font-size: 1.1em !important;
+  font-weight: 600 !important;
+}
+
+.md-nav__title .md-nav__button {
+  font-size: 1.1em !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+}
+
+.md-nav__link {
+  font-size: 1.1em !important;
+  font-weight: 500;
+  padding: 0.7rem 1.1rem;
+  line-height: 1.5;
+}
+
+.md-nav__link--active {
+  color: #7c3aed !important;
+  font-weight: 600 !important;
+  font-size: 1.1em !important;
+}
+
+/* Top-level navigation titles (ALL sections) - Same size as links for consistency */
+.md-sidebar .md-nav--primary .md-nav__list > .md-nav__item > .md-nav__title,
+.md-sidebar .md-nav--primary .md-nav__item > .md-nav__title,
+.md-sidebar .md-nav__item > .md-nav__title,
+.md-nav--primary .md-nav__list > .md-nav__item > .md-nav__title,
+.md-nav--primary .md-nav__item > .md-nav__title,
+.md-nav__item > .md-nav__title,
+.md-nav__title[for],
+.md-nav__title {
+  font-size: 1.1em !important;
+  font-weight: 600 !important;
+  padding: 0.7rem 1.1rem !important;
+  line-height: 1.5 !important;
+  display: block !important;
+}
+
+/* Ensure ALL section title buttons are the same size */
+.md-sidebar .md-nav--primary .md-nav__title .md-nav__button,
+.md-nav--primary .md-nav__title .md-nav__button,
+.md-nav__title .md-nav__button {
+  font-size: 1.1em !important;
+  font-weight: 600 !important;
+  padding: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* Force consistency for all section titles regardless of state */
+.md-nav__item--active > .md-nav__title,
+.md-nav__item--active > .md-nav__title .md-nav__button,
+.md-nav__item:not(.md-nav__item--active) > .md-nav__title,
+.md-nav__item:not(.md-nav__item--active) > .md-nav__title .md-nav__button {
+  font-size: 1.1em !important;
+}
+
+/* Target all text and emoji in navigation titles */
+.md-nav__title .md-nav__button,
+.md-nav__title .md-nav__button *,
+.md-nav__title * {
+  font-size: 1.1em !important;
+}
+
+/* Make ALL navigation links the same size - consistent across all levels */
+.md-nav__item .md-nav__link {
+  font-size: 1.1em !important;
+}
+
+.md-nav__item .md-nav__link--nested {
+  font-size: 1.1em !important;
+  padding-left: 1.6rem;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+/* Ensure ALL navigation items are the same size */
+.md-nav--primary .md-nav__item .md-nav__link {
+  font-size: 1.1em !important;
+}
+
+.md-nav--secondary .md-nav__item .md-nav__link {
+  font-size: 1.1em !important;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced tables */
+.md-typeset table:not([class]) {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Code block enhancements */
+.md-typeset pre > code {
+  border-radius: 10px;
+}
+
+/* Gradient borders for special sections */
+.gradient-border {
+  border: 2px solid;
+  border-image: linear-gradient(90deg, #7c3aed, #4f46e5, #6366f1) 1;
+  border-radius: 10px;
+}
+
+/* Responsive design for hero section */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3em 1.5em;
+    min-height: 500px;
+  }
+
+  .hero-title {
+    font-size: 3.5em;
+    margin-bottom: 0.4em;
+  }
+
+  .hero-subtitle {
+    font-size: 2.5em;
+    margin-top: 0.4em;
+  }
+
+  .hero-logo {
+    margin: 1em 0;
+  }
+
+  .animated-logo {
+    width: 220px;
+  }
+
+  .hero-tags {
+    gap: 1em;
+    margin-top: 1em;
+  }
+
+  .hero-tags .tag {
+    font-size: 0.95em;
+    padding: 0.6em 1.4em;
+  }
+
+  .hero-cta {
+    margin-top: 2em;
+    gap: 1em;
+  }
+
+  .cta-button {
+    padding: 0.9em 2em;
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 2em 1em;
+    min-height: 450px;
+  }
+
+  .hero-title {
+    font-size: 2.5em;
+    margin-bottom: 0.3em;
+  }
+
+  .hero-subtitle {
+    font-size: 1.8em;
+    margin-top: 0.3em;
+  }
+
+  .hero-logo {
+    margin: 0.8em 0;
+  }
+
+  .animated-logo {
+    width: 180px;
+  }
+
+  .hero-description {
+    font-size: 1.1em;
+    margin: 1em 0;
+  }
+
+  .hero-tags {
+    margin-top: 1em;
+    gap: 0.8em;
+  }
+
+  .hero-tags .tag {
+    font-size: 0.85em;
+    padding: 0.5em 1.2em;
+  }
+
+  .hero-cta {
+    margin-top: 1.5em;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-button {
+    width: 100%;
+    max-width: 280px;
+    padding: 0.9em 1.5em;
+    font-size: 0.95em;
+  }
+}
+
+/* Enhanced logo glow effect */
+@keyframes logoGlow {
+  0%, 100% {
+    filter: drop-shadow(0 10px 30px rgba(168, 85, 247, 0.4)) drop-shadow(0 0 20px rgba(236, 72, 153, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 15px 40px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 30px rgba(236, 72, 153, 0.5));
+  }
+}

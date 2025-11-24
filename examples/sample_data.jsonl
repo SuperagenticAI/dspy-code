@@ -1,6 +1,0 @@
-# Example Gold Examples
-# Format: JSON lines with input/output pairs
-
-{"input": {"text": "Hello world"}, "output": {"sentiment": "neutral"}}
-{"input": {"text": "I love this!"}, "output": {"sentiment": "positive"}}
-{"input": {"text": "This is terrible"}, "output": {"sentiment": "negative"}}
