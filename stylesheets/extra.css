@@ -194,7 +194,8 @@
   margin-left: 0.4rem;
 }
 
-/* Theme Toggle Button - Visible and styled */
+/* Theme Toggle Buttons - Show both light and dark mode toggles */
+/* Style all palette toggles */
 .md-header__button[for^="__palette"] {
   display: flex !important;
   align-items: center !important;
@@ -205,20 +206,19 @@
   margin: 0 0.2rem !important;
   border-radius: 0.25rem !important;
   transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
 
-/* Show ONLY the first theme toggle button - hide all others */
-.md-header__button[for^="__palette"] {
+/* Show both palette toggles (light and dark) */
+.md-header__button[for="__palette_0"],
+.md-header__button[for="__palette_1"] {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
-}
-
-/* Hide the second palette toggle (Material creates one per palette) */
-.md-header__button[for="__palette_1"] {
-  display: none !important;
 }
 
 /* Hide theme toggle in drawer/sidebar only (not in header) */
@@ -965,16 +965,20 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  display: inline-block;
+  display: block;
   font-weight: 800;
   letter-spacing: -0.02em;
   text-align: center;
+  width: 100%;
 }
 
 .hero-title {
   font-size: 5.5em;
-  margin: 0 0 0.5em 0;
+  margin: 0.5em 0;
   line-height: 1.1;
+  display: block;
+  width: 100%;
+  clear: both;
 }
 
 .hero-subtitle {
@@ -982,6 +986,9 @@
   margin: 0.5em 0 0.3em 0;
   line-height: 1.2;
   font-weight: 700;
+  display: block;
+  width: 100%;
+  clear: both;
 }
 
 .hero-description {
