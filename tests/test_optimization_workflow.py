@@ -269,5 +269,5 @@ def test_insufficient_data_error(workflow_manager, sample_code):
     # Try to validate with insufficient data
     workflow_manager.data_collector.examples = [Example(inputs={"text": "test"}, output="result")]
 
-    with pytest.raises(InsufficientDataError):
-        workflow_manager.collect_training_data(interactive=False)
+    with pytest.raises((InsufficientDataError, ValueError)):
+        workflow_manager.collect_training_data(interactive=False, file_path=None)

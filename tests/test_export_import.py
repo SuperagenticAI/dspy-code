@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from dspy_code.core.exceptions import ImportError, InvalidFormatError
+from dspy_code.core.exceptions import ExportError, ImportError, InvalidFormatError
 from dspy_code.export import ExportImportHandler, PackageBuilder, PackageMetadata
 
 
@@ -87,7 +87,7 @@ def test_export_code_invalid_format(export_handler, sample_code, temp_export_dir
     """Test exporting with invalid format raises error."""
     output_path = temp_export_dir / "test.txt"
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ExportError):
         export_handler.export_code(sample_code, "invalid", output_path)
 
 
@@ -158,7 +158,7 @@ def test_import_session_invalid_format(export_handler, temp_export_dir):
     session_file = temp_export_dir / "invalid.json"
     session_file.write_text(json.dumps({"invalid": "data"}))
 
-    with pytest.raises(InvalidFormatError):
+    with pytest.raises(ImportError):
         export_handler.import_session(session_file)
 
 
