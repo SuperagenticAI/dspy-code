@@ -3,6 +3,7 @@ Tests for DSPy code validation.
 """
 
 import pytest
+
 from dspy_code.validation import DSPyValidator, ValidationIssue, ValidationReport
 from dspy_code.validation.models import IssueCategory, IssueSeverity
 

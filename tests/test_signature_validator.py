@@ -5,6 +5,7 @@ Tests for DSPy signature validator.
 import ast
 
 import pytest
+
 from dspy_code.validation.models import IssueSeverity
 from dspy_code.validation.signature_validator import SignatureValidator
 

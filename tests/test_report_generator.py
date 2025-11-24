@@ -3,6 +3,8 @@ Tests for Validation Report Generator
 """
 
 import pytest
+from rich.console import Console
+
 from dspy_code.validation.models import (
     IssueCategory,
     IssueSeverity,
@@ -11,7 +13,6 @@ from dspy_code.validation.models import (
 )
 from dspy_code.validation.quality_scorer import QualityMetrics
 from dspy_code.validation.report_generator import ReportGenerator
-from rich.console import Console
 
 
 @pytest.fixture

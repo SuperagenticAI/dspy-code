@@ -5,6 +5,7 @@ Tests for DSPy module validator.
 import ast
 
 import pytest
+
 from dspy_code.validation.models import IssueSeverity
 from dspy_code.validation.module_validator import ModuleValidator
 

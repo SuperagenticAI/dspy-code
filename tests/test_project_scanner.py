@@ -6,6 +6,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+
 from dspy_code.project.scanner import ProjectScanner, ProjectType
 
 
