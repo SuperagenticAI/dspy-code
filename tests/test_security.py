@@ -36,9 +36,9 @@ class TestIndexerSecurity:
 
         for dangerous_dir in dangerous_dirs:
             if dangerous_dir.exists():
-                assert not indexer._is_safe_to_scan(
-                    dangerous_dir
-                ), f"{dangerous_dir} should be blocked"
+                assert not indexer._is_safe_to_scan(dangerous_dir), (
+                    f"{dangerous_dir} should be blocked"
+                )
 
         # /var root should be blocked (might resolve to /private/var)
         # Note: /var is often a symlink to /private/var on macOS
@@ -82,9 +82,9 @@ class TestIndexerSecurity:
 
         # Direct child of home should be blocked
         shallow_dir = home / "test_project"
-        assert not indexer._is_safe_to_scan(
-            shallow_dir
-        ), "Shallow home subdirectory should be blocked"
+        assert not indexer._is_safe_to_scan(shallow_dir), (
+            "Shallow home subdirectory should be blocked"
+        )
 
     def test_safe_rglob_respects_depth(self):
         """Test that safe_rglob respects max depth."""
