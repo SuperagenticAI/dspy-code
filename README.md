@@ -37,15 +37,10 @@
 
 **🚀 Get Started in 30 Seconds**
 
-<div style="background: linear-gradient(90deg, #9333ea, #ec4899, #f97316); padding: 1.5em; border-radius: 12px; margin: 1.5em 0; box-shadow: 0 4px 20px rgba(147, 51, 234, 0.3);">
-
-<div align="center" style="margin-bottom: 1em; color: white; font-weight: bold;">
-✨ Always install the latest version for best experience ✨
-</div>
+> ✨ Always install the latest version for best experience ✨
 
 ```bash
 pip install --upgrade dspy-code
-dspy-code
 ```
 
 </div>
