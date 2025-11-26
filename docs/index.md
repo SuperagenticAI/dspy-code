@@ -438,7 +438,7 @@ dspy-code
 → /init --fresh
 
 # Connect to model
-→ /connect ollama llama3.1:8b
+→ /model
 
 # Generate code in natural language
 → Create a sentiment analyzer with confidence scores
@@ -477,7 +477,7 @@ dspy-code
 <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 1.5em; border-radius: 10px; color: white;">
   <h3 style="color: white; margin-top: 0;">3. Build</h3>
   <pre style="background: rgba(0,0,0,0.2); padding: 1em; border-radius: 5px; margin: 0;"><code>/init
-/connect ollama llama3.1:8b
+/model
 Create a [your app]</code></pre>
 </div>
 
@@ -540,7 +540,7 @@ Result: Deep understanding through hands-on building
     **Yes!** Run `/init` in your project directory. DSPy Code will scan your code and help you extend it.
 
 !!! question "What models can I use?"
-    **Any!** Ollama (local), OpenAI, Anthropic, Gemini. Connect with one command: `/connect ollama llama3.1:8b`
+    **Any!** Ollama (local), OpenAI, Anthropic, Gemini. Connect easily with `/model` or directly with `/connect <provider> <model>`.
 
 !!! question "Is the optimization real or mocked?"
     **Real GEPA optimization!** Actual Genetic Pareto optimization that improves accuracy by 10-30%.

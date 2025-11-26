@@ -3,6 +3,7 @@ Enhanced animations and loading indicators for DSPy Code.
 Inspired by Claude Code's engaging animation system.
 """
 
+import os
 import random
 import threading
 import time
@@ -13,6 +14,9 @@ from rich.live import Live
 from rich.panel import Panel
 from rich.spinner import Spinner
 from rich.text import Text
+
+# Allow users to disable emoji-heavy UI if their terminal/font doesn't support it well.
+SIMPLE_UI = os.getenv("DSPY_CODE_SIMPLE_UI", "").lower() in {"1", "true", "yes", "on"}
 
 console = Console()
 
@@ -38,68 +42,114 @@ def create_safe_spinner(spinner_name: str, text: str = "", style: str = "cyan") 
         return Spinner("dots", text=text, style=style)
 
 
-# Enhanced thinking messages with stages
-THINKING_MESSAGES_STAGE_1 = [
-    "🧠 Analyzing your request...",
-    "🔍 Understanding what you need...",
-    "📝 Processing your input...",
-    "🎯 Identifying the task...",
-    "🔬 Examining the requirements...",
-]
+# Enhanced thinking messages with stages (emoji-rich or simple, depending on SIMPLE_UI)
+if SIMPLE_UI:
+    THINKING_MESSAGES_STAGE_1 = [
+        "Analyzing your request...",
+        "Understanding what you need...",
+        "Processing your input...",
+        "Identifying the task...",
+        "Examining the requirements...",
+    ]
 
-THINKING_MESSAGES_STAGE_2 = [
-    "⚡ Generating code structure...",
-    "🎨 Crafting your DSPy components...",
-    "🔧 Building the solution...",
-    "✨ Creating the code...",
-    "🏗️  Assembling the pieces...",
-    "🌟 Weaving everything together...",
-]
+    THINKING_MESSAGES_STAGE_2 = [
+        "Generating code structure...",
+        "Crafting your DSPy components...",
+        "Building the solution...",
+        "Creating the code...",
+        "Assembling the pieces...",
+        "Weaving everything together...",
+    ]
 
-THINKING_MESSAGES_STAGE_3 = [
-    "🎭 Adding the finishing touches...",
-    "💫 Polishing the code...",
-    "🌈 Optimizing the structure...",
-    "🎪 Adding best practices...",
-    "🔮 Finalizing your program...",
-    "✨ Almost there...",
-]
+    THINKING_MESSAGES_STAGE_3 = [
+        "Adding the finishing touches...",
+        "Polishing the code...",
+        "Optimizing the structure...",
+        "Adding best practices...",
+        "Finalizing your program...",
+        "Almost there...",
+    ]
 
-# Engaging messages for LLM processing
-LLM_PROCESSING_MESSAGES = [
-    "🤔 Thinking deeply about this...",
-    "💭 Processing with the language model...",
-    "🧠 The AI is working on your request...",
-    "⚡ Generating intelligent response...",
-    "🎯 Crafting the perfect solution...",
-    "🌟 Creating something amazing...",
-    "🔮 Consulting the knowledge base...",
-    "📚 Drawing from DSPy expertise...",
-    "🎨 Painting your solution...",
-    "🚀 Accelerating through the problem...",
-    "💡 Having a brilliant idea...",
-    "🎪 Performing computational magic...",
-    "🔬 Analyzing patterns and structures...",
-    "🎭 Orchestrating the components...",
-    "🌈 Synthesizing the answer...",
-    "✨ Channeling DSPy wisdom...",
-    "🎯 Zeroing in on the solution...",
-    "🌟 Weaving code and concepts...",
-    "💫 Assembling the perfect response...",
-    "🔧 Engineering excellence...",
-]
+    # Engaging messages for LLM processing
+    LLM_PROCESSING_MESSAGES = [
+        "Thinking about your request...",
+        "Processing with the language model...",
+        "The AI is working on your request...",
+        "Generating an answer...",
+        "Crafting the solution...",
+    ]
 
-# Code generation specific messages
-CODE_GENERATION_MESSAGES = [
-    "📝 Writing your signature...",
-    "🏗️  Building your module...",
-    "⚙️  Engineering the structure...",
-    "🎨 Adding best practices...",
-    "✨ Polishing the code...",
-    "🔧 Optimizing the implementation...",
-    "🌟 Adding documentation...",
-    "💫 Finalizing details...",
-]
+    # Code generation specific messages
+    CODE_GENERATION_MESSAGES = [
+        "Writing your signature...",
+        "Building your module...",
+        "Engineering the structure...",
+        "Adding best practices...",
+        "Polishing the code...",
+    ]
+else:
+    # Emoji-rich messages (default)
+    THINKING_MESSAGES_STAGE_1 = [
+        "🧠 Analyzing your request...",
+        "🔍 Understanding what you need...",
+        "📝 Processing your input...",
+        "🎯 Identifying the task...",
+        "🔬 Examining the requirements...",
+    ]
+
+    THINKING_MESSAGES_STAGE_2 = [
+        "⚡ Generating code structure...",
+        "🎨 Crafting your DSPy components...",
+        "🔧 Building the solution...",
+        "✨ Creating the code...",
+        "🏗️  Assembling the pieces...",
+        "🌟 Weaving everything together...",
+    ]
+
+    THINKING_MESSAGES_STAGE_3 = [
+        "🎭 Adding the finishing touches...",
+        "💫 Polishing the code...",
+        "🌈 Optimizing the structure...",
+        "🎪 Adding best practices...",
+        "🔮 Finalizing your program...",
+        "✨ Almost there...",
+    ]
+
+    # Engaging messages for LLM processing
+    LLM_PROCESSING_MESSAGES = [
+        "🤔 Thinking deeply about this...",
+        "💭 Processing with the language model...",
+        "🧠 The AI is working on your request...",
+        "⚡ Generating intelligent response...",
+        "🎯 Crafting the perfect solution...",
+        "🌟 Creating something amazing...",
+        "🔮 Consulting the knowledge base...",
+        "📚 Drawing from DSPy expertise...",
+        "🎨 Painting your solution...",
+        "🚀 Accelerating through the problem...",
+        "💡 Having a brilliant idea...",
+        "🎪 Performing computational magic...",
+        "🔬 Analyzing patterns and structures...",
+        "🎭 Orchestrating the components...",
+        "🌈 Synthesizing the answer...",
+        "✨ Channeling DSPy wisdom...",
+        "🎯 Zeroing in on the solution...",
+        "🌟 Weaving code and concepts...",
+        "💫 Assembling the perfect response...",
+        "🔧 Engineering excellence...",
+    ]
+
+    # Code generation specific messages
+    CODE_GENERATION_MESSAGES = [
+        "📝 Writing your signature...",
+        "🏗️  Building your module...",
+        "⚙️  Engineering the structure...",
+        "🎨 Adding best practices...",
+        "✨ Polishing the code...",
+        "🔧 Optimizing the implementation...",
+        "🌟 Adding documentation...",
+        "💫 Finalizing details...",
+    ]
 
 
 def get_random_thinking_message(stage: int = 1) -> str:
@@ -159,79 +209,70 @@ class EnhancedThinkingAnimation:
         else:
             self.current_message = get_random_thinking_message(1)
 
-        # Use different spinner types for variety (only valid Rich spinner names)
-        spinner_types = [
-            "dots",
-            "dots2",
-            "dots3",
-            "dots4",
-            "dots5",
-            "dots6",
-            "dots7",
-            "dots8",
-            "dots9",
-            "dots10",
-            "dots11",
-            "dots12",
-            "line",
-            "line2",
-            "pipe",
-            "simpleDots",
-            "simpleDotsScrolling",
-            "star",
-            "star2",
-            "flip",
-            "hamburger",
-            "growVertical",
-            "growHorizontal",
-            "balloon",
-            "balloon2",
-            "noise",
-            "bounce",
-            "boxBounce",
-            "boxBounce2",
-            "triangle",
-            "arc",
-            "circle",
-            "squareCorners",
-            "circleQuarters",
-            "circleHalves",
-            "squish",
-            "toggle",
-            "toggle2",
-            "toggle3",
-            "toggle4",
-            "toggle5",
-            "toggle6",
-            "toggle7",
-            "toggle8",
-            "toggle9",
-            "toggle10",
-            "toggle11",
-            "toggle12",
-            "toggle13",
-            "arrow",
-            "arrow2",
-            "arrow3",
-            "bouncingBar",
-            "bouncingBall",
-            "smiley",
-            "monkey",
-            "hearts",
-            "clock",
-            "earth",
-            "moon",
-            "runner",
-            "pong",
-            "shark",
-            "dqpb",
-            "weather",
-            "christmas",
-            "grenade",
-            "point",
-            "layer",
-            "betaWave",
-        ]
+        # Use spinner types that render well across terminals; allow a simpler set if SIMPLE_UI is on.
+        if SIMPLE_UI:
+            spinner_types = [
+                "dots",
+                "line",
+                "bouncingBar",
+            ]
+        else:
+            spinner_types = [
+                "dots",
+                "dots2",
+                "dots3",
+                "dots4",
+                "dots5",
+                "dots6",
+                "dots7",
+                "dots8",
+                "dots9",
+                "dots10",
+                "dots11",
+                "dots12",
+                "line",
+                "line2",
+                "pipe",
+                "simpleDots",
+                "simpleDotsScrolling",
+                "star",
+                "star2",
+                "flip",
+                "hamburger",
+                "growVertical",
+                "growHorizontal",
+                "bounce",
+                "boxBounce",
+                "boxBounce2",
+                "triangle",
+                "arc",
+                "circle",
+                "squareCorners",
+                "circleQuarters",
+                "circleHalves",
+                "squish",
+                "toggle",
+                "toggle2",
+                "toggle3",
+                "toggle4",
+                "toggle5",
+                "toggle6",
+                "toggle7",
+                "toggle8",
+                "toggle9",
+                "toggle10",
+                "toggle11",
+                "toggle12",
+                "toggle13",
+                "arrow",
+                "arrow2",
+                "arrow3",
+                "bouncingBar",
+                "bouncingBall",
+                "smiley",
+                "hearts",
+                "clock",
+            ]
 
         self.spinner_type = random.choice(spinner_types)
         # Use safe spinner creation (handles PyPI package compatibility)

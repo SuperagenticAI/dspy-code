@@ -312,8 +312,8 @@ dspy-code
 # Initialize your project (creates config and scans your environment)
 /init
 
-# Connect to a model (example with Ollama)
-/connect ollama llama3.1:8b
+# Connect to a model (interactive selector)
+/model
 
 # Generate your first program using natural language
 Create a sentiment analyzer that takes text and outputs positive or negative
@@ -339,7 +339,8 @@ DSPy Code is **interactive-only** - all commands are slash commands. Here are th
 - `/exit` - Exit the interactive session
 
 ### 🤖 Model Connection
-- `/connect <provider> <model>` - Connect to LLM (ollama, openai, anthropic, gemini)
+- `/model` - Interactive model selection (local via Ollama or cloud providers)
+- `/connect <provider> <model>` - Directly connect to LLM when you know the model name
 - `/disconnect` - Disconnect current model
 - `/models` - List available models
 - `/status` - Show current connection status
@@ -411,7 +412,7 @@ DSPy Code is **interactive-only** - all commands are slash commands. Here are th
 ```bash
 dspy-code
 /init
-/connect ollama llama3.1:8b
+/model
 Create a RAG system for document Q&A
 /save rag_system.py
 /validate
@@ -481,20 +482,25 @@ dspy-code
 Connect to any LLM provider:
 
 ```bash
+# Recommended: interactive model selector
+/model
+
+# Or connect directly if you know the model name:
+
 # Ollama (local, free)
-/connect ollama llama3.1:8b
+/connect ollama gpt-oss:120b
 
 # OpenAI (example small model)
 /connect openai gpt-5-nano
 
 # Anthropic (paid key required)
-/connect anthropic claude-3-5-sonnet-20241022
+/connect anthropic claude-sonnet-4.5
 
 # Google Gemini (example model)
 /connect gemini gemini-2.5-flash
 ```
 
-> 💡 **Tip:** These are just starting points. Check your provider docs for the **latest models** (for example gpt-4o / gpt‑5 family, Gemini 2.5, latest Claude Sonnet/Opus) and plug them into `/connect`.
+> 💡 **Tip:** These are just starting points. Check your provider docs for the **latest models** (for example gpt-4o / gpt‑5 family, Gemini 2.5, latest Claude Sonnet/Opus) and either pick them via `/model` or plug them into `/connect`.
 
 ## 🧬 GEPA Optimization
 
@@ -555,8 +561,11 @@ pip install -e .
 ### With uv (Faster)
 
 ```bash
-# Always get the latest version
+# Always get the latest version into your current environment
 uv pip install --upgrade dspy-code
+
+# Or add it to your project's pyproject.toml in one step
+uv add dspy-code
 ```
 
 ## 🏗️ Architecture

@@ -17,10 +17,22 @@ DSPy Code supports both **local** and **cloud** LLMs:
 
 ## Quick Connect
 
+### Easiest: Interactive Model Selector
+
+```bash
+/model
+```
+
+This walks you through:
+
+- Picking **Ollama** (local) vs **cloud** providers
+- For Ollama: selecting from detected models (for example `gpt-oss:120b`, `llama3.2`) by number
+- For cloud: picking **OpenAI**, **Anthropic**, or **Gemini** and then typing a model name (for example `gpt-5-nano`, `claude-sonnet-4.5`, `gemini-2.5-flash`)
+
 ### Ollama (Local - Recommended for Beginners)
 
-```
-/connect ollama llama3.1:8b
+```bash
+/connect ollama gpt-oss:120b
 ```
 
 **Advantages:**
@@ -31,7 +43,7 @@ DSPy Code supports both **local** and **cloud** LLMs:
 
 **Requirements:**
 - Ollama installed
-- Model downloaded: `ollama pull llama3.1:8b`
+- Model downloaded: `ollama pull gpt-oss:120b`
 
 ### OpenAI (Cloud)
 

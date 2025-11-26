@@ -157,10 +157,14 @@ class ModelManager:
                     self.endpoint = endpoint.rstrip("/")
 
                 def generate(self, model, prompt):
+                    # Use a shorter timeout for connectivity tests, but allow override.
+                    from os import getenv
+
+                    timeout = int(getenv("OLLAMA_TEST_TIMEOUT", "30"))
                     response = requests.post(
                         f"{self.endpoint}/api/generate",
                         json={"model": model, "prompt": prompt, "stream": False},
-                        timeout=30,
+                        timeout=timeout,
                     )
                     response.raise_for_status()
                     return response.json()["response"]

@@ -172,10 +172,30 @@ class {module_name}(dspy.Module):
         return module_code
 
     def _generate_program(self, task_def: TaskDefinition, examples: list[GoldExample]) -> str:
-        """Generate main program code."""
+        """Generate main program code that aligns with the model you use in DSPy Code."""
 
         class_name = self._create_class_name(task_def.description)
         module_name = f"{class_name}Module"
+
+        # Try to infer a default model from config (used as a hint in comments)
+        try:
+            default_model = self.model_manager.config_manager.config.default_model
+        except Exception:  # pragma: no cover - defensive
+            default_model = None
+
+        if default_model:
+            lm_comment = (
+                f'# lm = dspy.LM(model="{default_model}")  # Uses your configured default model\n'
+                f"# dspy.configure(lm=lm)\n"
+            )
+        else:
+            lm_comment = (
+                '# lm = dspy.LM("ollama/llama3.2:1b", api_base="http://localhost:11434")\n'
+                '# or: lm = dspy.LM("openai/gpt-5-nano")\n'
+                '# or: lm = dspy.LM("anthropic/claude-sonnet-4.5")\n'
+                '# or: lm = dspy.LM("gemini/gemini-2.5-flash")\n'
+                "# dspy.configure(lm=lm)\n"
+            )
 
         # Generate example usage
         example_usage = ""
@@ -197,9 +217,15 @@ class {module_name}(dspy.Module):
     """Main function to demonstrate the {task_def.description.lower()} module."""
     import dspy
 
-    # Configure DSPy (you may need to set up your language model)
-    # lm = dspy.LM(model="openai/gpt-5.1")  # or your preferred model
-    # dspy.configure(lm=lm)
+    # Configure DSPy with the same model you use in DSPy Code.
+    # For example, if you connected via /model or /connect:
+    # - Ollama:   lm = dspy.LM("ollama/llama3.2:1b", api_base="http://localhost:11434")
+    # - OpenAI:   lm = dspy.LM("openai/gpt-5-nano")
+    # - Claude:   lm = dspy.LM("anthropic/claude-sonnet-4.5")
+    # - Gemini:   lm = dspy.LM("gemini/gemini-2.5-flash")
+    # Or use the default_model from dspy_config.yaml:
+    {lm_comment.rstrip()}
+
     {example_usage}
 
 if __name__ == "__main__":

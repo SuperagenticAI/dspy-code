@@ -189,43 +189,53 @@ Browse DSPy templates and patterns.
 
 ## Model Connection Commands
 
+### /model
+
+Interactively select and connect to a model.
+
+**Basic usage:**
+
+```bash
+/model
+```
+
+You will be prompted to choose:
+
+- Local models via **Ollama** (auto-detected from your Ollama installation)
+- Cloud providers: **OpenAI**, **Anthropic**, **Gemini** (you then type the model name, e.g. `gpt-5-nano`, `claude-sonnet-4.5`, `gemini-2.5-flash`)
+
+**Shortcuts:**
+
+```bash
+/model ollama   # Only show local Ollama models and pick one by number
+/model cloud    # Pick a cloud provider, then type the model name
+```
+
 ### /connect
 
-Connect to a language model.
+Directly connect to a specific model if you already know the name.
 
 **Ollama (Local):**
 
-```
-/connect ollama llama3.1:8b
-```
-
-```
+```bash
 /connect ollama gpt-oss:120b
 ```
 
 **OpenAI:**
 
-```
-/connect openai gpt-4
-```
-
-```
+```bash
 /connect openai gpt-5-nano
 ```
 
 **Anthropic Claude:**
 
-```
+```bash
 /connect anthropic claude-sonnet-4.5
-```
-
-```
-/connect anthropic claude-opus-4.5
 ```
 
 **Google Gemini:**
 
-```
+```bash
 /connect gemini gemini-2.5-flash
 ```
 

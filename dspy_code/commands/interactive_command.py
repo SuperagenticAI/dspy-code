@@ -386,7 +386,7 @@ class InteractiveSession:
         # Show connection requirement message
         console.print()
         console.print(
-            "[bold yellow]🔌 Connect a model to start:[/bold yellow] [cyan]/connect ollama llama3.1:8b[/cyan] or [cyan]/models[/cyan] to see all options"
+            "[bold yellow]🔌 Connect a model to start:[/bold yellow] [cyan]/model[/cyan] for interactive selection, or [cyan]/connect ollama gpt-oss:120b[/cyan], or [cyan]/models[/cyan] to see all options"
         )
         console.print()
 
@@ -400,7 +400,7 @@ class InteractiveSession:
             # Get user input
             user_input = Prompt.ask(
                 "[bold cyan]Enter command[/bold cyan]",
-                default="/connect ollama llama3.1:8b" if attempts == 1 else "",
+                default="/model" if attempts == 1 else "",
             ).strip()
 
             if not user_input:
@@ -577,6 +577,7 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
 
 - `/connect <type> <model>` - Connect to a language model
 - `/models` - List available models
+- `/model` - Interactively select and connect to a model
 - `/status` - Show connection status
 - `/disconnect` - Disconnect from model
 - `/reference [topic]` - View DSPy documentation
@@ -653,6 +654,26 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
         """Analyze user intent from natural language input with enhanced detection."""
         user_input_lower = user_input.lower().strip()
 
+        # Helper: detect if this looks like a natural-language question
+        is_question = (
+            "?" in user_input
+            or user_input_lower.endswith("?")
+            or user_input_lower.startswith(
+                (
+                    "how ",
+                    "what ",
+                    "why ",
+                    "can ",
+                    "could ",
+                    "should ",
+                    "would ",
+                    "explain ",
+                    "tell me ",
+                    "describe ",
+                )
+            )
+        )
+
         # PRIORITY 0: Check for code generation requests FIRST (before explanation)
         # These should NOT be treated as explanation requests
         code_generation_indicators = [
@@ -686,6 +707,7 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
                     "explain",
                     "what is",
                     "how does",
+                    "how can",
                     "tell me about",
                     "describe",
                     "what are",
@@ -693,11 +715,11 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
                     "why",
                 )
             ),
-            "what is" in user_input_lower and ("?" in user_input or user_input_lower.endswith("?")),
-            "how does" in user_input_lower
-            and ("?" in user_input or user_input_lower.endswith("?")),
+            "what is" in user_input_lower and is_question,
+            "how does" in user_input_lower and is_question,
+            "how can" in user_input_lower and is_question,
             "tell me about" in user_input_lower,
-            "explain" in user_input_lower and ("?" in user_input or user_input_lower.endswith("?")),
+            "explain" in user_input_lower and is_question,
         ]
         # Only treat as explanation if it's NOT a code generation request
         if any(explanation_patterns) and not any(
@@ -741,7 +763,7 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
 
         # PRIORITY 3: Check for optimization
         optimize_keywords = ["optimize", "improve", "gepa", "better performance", "optimization"]
-        if any(keyword in user_input_lower for keyword in optimize_keywords):
+        if any(keyword in user_input_lower for keyword in optimize_keywords) and not is_question:
             logger.debug("Intent: optimize (matched optimization keywords)")
             return "optimize"
 
@@ -786,25 +808,25 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
             "create module",
             "build module",
         ]
-        if any(keyword in user_input_lower for keyword in module_keywords):
+        if any(keyword in user_input_lower for keyword in module_keywords) and not is_question:
             logger.debug("Intent: create_module (matched module keywords)")
             return "create_module"
 
         # PRIORITY 7: Check for RAG/retrieval specific requests
         rag_keywords = ["rag", "retrieval", "retrieve", "document search", "knowledge base"]
-        if any(keyword in user_input_lower for keyword in rag_keywords):
+        if any(keyword in user_input_lower for keyword in rag_keywords) and not is_question:
             logger.debug("Intent: create_module (matched RAG keywords)")
             return "create_module"
 
         # PRIORITY 8: Check for agent/tool specific requests
         agent_keywords = ["agent", "tools", "react", "actions", "tool use"]
-        if any(keyword in user_input_lower for keyword in agent_keywords):
+        if any(keyword in user_input_lower for keyword in agent_keywords) and not is_question:
             logger.debug("Intent: create_module (matched agent keywords)")
             return "create_module"
 
         # PRIORITY 9: Task-oriented patterns (only if no other match)
         # Only match if it's clearly a task description, not a question
-        if not user_input_lower.endswith("?") and "?" not in user_input:
+        if not is_question:
             task_patterns = [
                 "classif",
                 "analyz",
@@ -823,7 +845,7 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
                 return "create_module"
 
         # PRIORITY 10: Check for action verbs at start (only if not a question)
-        if not user_input_lower.endswith("?") and "?" not in user_input:
+        if not is_question:
             action_verbs = ["create", "build", "make", "write", "develop", "need", "want"]
             if any(user_input_lower.startswith(verb) for verb in action_verbs):
                 logger.debug("Intent: create_module (starts with action verb)")
@@ -958,6 +980,9 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
             ]
         )
 
+        # Suggest LM configuration that matches the connected model
+        self._show_lm_configuration_hint()
+
     def _handle_create_program(self, user_input: str):
         """Handle complete program creation request."""
         console.print("I'll create a complete DSPy program for you!\n")
@@ -1025,6 +1050,55 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
                 "Ask me to add [yellow]optimization[/yellow] or [yellow]evaluation[/yellow]",
             ]
         )
+
+        # Suggest LM configuration that matches the connected model
+        self._show_lm_configuration_hint()
+
+    def _show_lm_configuration_hint(self) -> None:
+        """Print a short hint showing how to configure dspy.LM for the connected model.
+
+        This does not modify the generated code, but gives users a copy-paste snippet
+        so they can easily align DSPy LM configuration with the model connected in DSPy Code.
+        """
+        if not self.llm_connector or not self.llm_connector.current_model:
+            return
+
+        model_name = self.llm_connector.current_model
+        model_type = getattr(self.llm_connector, "model_type", None)
+
+        if model_type == "ollama":
+            console.print(
+                "\n[dim]💡 To run this program with your connected Ollama model,"
+                " configure DSPy like:[/dim]"
+            )
+            console.print(
+                f"[cyan]lm = dspy.LM(model=\"ollama/{model_name}\", api_base=\"http://localhost:11434\")[/cyan]"
+            )
+            console.print("[cyan]dspy.configure(lm=lm)[/cyan]\n")
+        elif model_type == "openai":
+            console.print(
+                "\n[dim]💡 To run this program with your connected OpenAI model,"
+                " configure DSPy like:[/dim]"
+            )
+            console.print(
+                f"[cyan]lm = dspy.LM(model=\"openai/{model_name}\")[/cyan]\n[cyan]dspy.configure(lm=lm)[/cyan]\n"
+            )
+        elif model_type == "anthropic":
+            console.print(
+                "\n[dim]💡 To run this program with your connected Anthropic model,"
+                " configure DSPy like:[/dim]"
+            )
+            console.print(
+                f"[cyan]lm = dspy.LM(model=\"anthropic/{model_name}\")[/cyan]\n[cyan]dspy.configure(lm=lm)[/cyan]\n"
+            )
+        elif model_type == "gemini":
+            console.print(
+                "\n[dim]💡 To run this program with your connected Gemini model,"
+                " configure DSPy like:[/dim]"
+            )
+            console.print(
+                f"[cyan]lm = dspy.LM(model=\"gemini/{model_name}\")[/cyan]\n[cyan]dspy.configure(lm=lm)[/cyan]\n"
+            )
 
     def _extract_data_generation_params(self, user_input: str) -> tuple[str, int]:
         """Extract task description and number of examples from user input.

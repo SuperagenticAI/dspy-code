@@ -43,7 +43,7 @@ All commands are slash commands in interactive mode:
 ```
 dspy-code
   → /init
-  → /connect ollama llama3.1:8b
+  → /model
   → Create a sentiment analyzer
   → /save sentiment.py
   → /validate

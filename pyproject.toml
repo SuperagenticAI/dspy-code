@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dspy-code"
-version = "0.0.5"
+version = "0.1.0"
 description = "Claude Code for DSPy: AI-powered interactive development environment for DSPy"
 readme = "README.md"
 license = "MIT"
@@ -34,7 +34,8 @@ requires-python = ">=3.10"
 dependencies = [
     "click>=8.0.0",
     "dspy>=3.0.4",
-    "rich>=13.0.0",
+    # Modern Rich for full emoji + spinner support across terminals (13.7+ and 14.x)
+    "rich>=13.7.0,<15.0.0",
     "requests>=2.28.0",
     "pyyaml>=6.0",
     "mcp>=1.2.1",

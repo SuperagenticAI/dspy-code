@@ -86,6 +86,7 @@ class SlashCommandHandler:
             "/eval": self.cmd_eval,
             "/optimize": self.cmd_optimize,
             "/connect": self.cmd_connect,
+            "/model": self.cmd_model,
             "/models": self.cmd_models,
             "/status": self.cmd_status,
             "/disconnect": self.cmd_disconnect,
@@ -220,6 +221,167 @@ class SlashCommandHandler:
                 console.print(f"     export {model_type.upper()}_API_KEY=your-key")
                 console.print("  3. Or provide key in command:")
                 console.print(f"     /connect {model_type} {model_name} your-key")
+
+    def cmd_model(self, args: list):
+        """
+        Interactively select and connect to a model.
+
+        Usage:
+            /model              - Choose local or cloud, then connect
+            /model ollama       - Choose from detected Ollama models
+            /model cloud        - Choose provider, then type model name
+        """
+        source = args[0].lower() if args else None
+
+        # If user didn't specify, ask whether they want local or cloud
+        if source not in {"ollama", "cloud"}:
+            console.print()
+            console.print("[bold cyan]🧠 Model Selector[/bold cyan]")
+            console.print("  [1] Local models via [bold]Ollama[/bold]")
+            console.print("  [2] Cloud provider ([bold]OpenAI[/bold], [bold]Anthropic[/bold], [bold]Gemini[/bold])")
+            console.print("  [q] Cancel")
+            choice = console.input("[cyan]Select model source [1/2/q]: [/cyan]").strip().lower()
+
+            if choice in {"q", "quit", "exit"}:
+                show_info_message("Model selection cancelled.")
+                return
+            elif choice == "1":
+                source = "ollama"
+            elif choice == "2":
+                source = "cloud"
+            else:
+                show_error_message("Invalid choice. Use 1, 2, or q.")
+                return
+
+        if source == "ollama":
+            self._select_ollama_model()
+        elif source == "cloud":
+            self._select_cloud_model()
+        else:
+            show_error_message("Unknown model source. Use 'ollama' or 'cloud'.")
+
+    def _select_ollama_model(self) -> None:
+        """Interactive selection of an Ollama model."""
+        console.print()
+        show_info_message("Detecting available Ollama models...")
+
+        ollama_models = self.llm_connector.list_available_ollama_models()
+
+        if not ollama_models:
+            show_error_message("No Ollama models detected or unable to reach Ollama.")
+            console.print("\n[dim]Troubleshooting:[/dim]")
+            console.print("  1. Make sure Ollama is running: [cyan]ollama serve[/cyan]")
+            console.print("  2. List models: [cyan]ollama list[/cyan]")
+            console.print("  3. Pull a model: [cyan]ollama pull llama3.2[/cyan]")
+            console.print("  4. Then run: [cyan]/model ollama[/cyan]")
+            return
+
+        console.print("[bold cyan]🖥️ Local Models (Ollama):[/bold cyan]")
+        console.print()
+        for idx, model_name in enumerate(ollama_models, start=1):
+            console.print(f"  [cyan]{idx}.[/cyan] {model_name}")
+
+        console.print()
+        selection = console.input(
+            "[cyan]Enter the number of the model to connect (or q to cancel): [/cyan]"
+        ).strip().lower()
+
+        if selection in {"q", "quit", "exit"}:
+            show_info_message("Model selection cancelled.")
+            return
+
+        if not selection.isdigit():
+            show_error_message("Please enter a valid number from the list.")
+            return
+
+        index = int(selection)
+        if index < 1 or index > len(ollama_models):
+            show_error_message("Invalid selection number.")
+            return
+
+        model_name = ollama_models[index - 1]
+
+        console.print()
+        show_info_message(f"Connecting to Ollama model: {model_name}...")
+
+        try:
+            self.llm_connector.connect_to_model(model_name, "ollama")
+            show_success_message(f"Connected to {model_name}!")
+            console.print()
+            show_info_message(
+                "The CLI will now use this model to understand your requests and generate code."
+            )
+        except Exception as e:
+            show_error_message(f"Connection failed: {e}")
+            console.print("\n[dim]Troubleshooting:[/dim]")
+            console.print("  1. Make sure Ollama is running: [cyan]ollama serve[/cyan]")
+            console.print("  2. Check the model exists: [cyan]ollama list[/cyan]")
+            console.print("  3. Try pulling the model again: [cyan]ollama pull <model>[/cyan]")
+
+    def _select_cloud_model(self) -> None:
+        """Interactive selection of a cloud model (OpenAI, Anthropic, Gemini)."""
+        console.print()
+        console.print("[bold magenta]☁  Cloud Provider[/bold magenta]")
+        console.print("  [1] OpenAI (e.g., gpt-5-nano)")
+        console.print("  [2] Anthropic (e.g., claude-sonnet-4.5)")
+        console.print("  [3] Gemini (e.g., gemini-2.5-flash)")
+        console.print("  [q] Cancel")
+
+        choice = console.input("[cyan]Select provider [1-3/q]: [/cyan]").strip().lower()
+
+        if choice in {"q", "quit", "exit"}:
+            show_info_message("Model selection cancelled.")
+            return
+
+        provider_map = {"1": "openai", "2": "anthropic", "3": "gemini"}
+        if choice not in provider_map:
+            show_error_message("Invalid choice. Use 1, 2, 3, or q.")
+            return
+
+        provider = provider_map[choice]
+        example_models = {
+            "openai": "gpt-5-nano",
+            "anthropic": "claude-sonnet-4.5",
+            "gemini": "gemini-2.5-flash",
+        }
+        env_vars = {
+            "openai": "OPENAI_API_KEY",
+            "anthropic": "ANTHROPIC_API_KEY",
+            "gemini": "GEMINI_API_KEY",
+        }
+
+        example = example_models[provider]
+        env_var = env_vars[provider]
+
+        console.print()
+        model_name = console.input(
+            f"[cyan]Enter {provider} model name (e.g., {example}): [/cyan]"
+        ).strip()
+
+        if not model_name:
+            show_error_message("Model name is required.")
+            return
+
+        console.print()
+        show_info_message(
+            f"Connecting to {provider} model '{model_name}' "
+            f"(expects {env_var} to be set in your environment)..."
+        )
+
+        try:
+            # API keys are read from environment variables by LLMConnector
+            self.llm_connector.connect_to_model(model_name, provider)
+            show_success_message(f"Connected to {model_name}!")
+            console.print()
+            show_info_message(
+                "The CLI will now use this model to understand your requests and generate code."
+            )
+        except Exception as e:
+            show_error_message(f"Connection failed: {e}")
+            console.print("\n[dim]Troubleshooting:[/dim]")
+            console.print(f"  1. Check that {env_var} is set correctly")
+            console.print("  2. Verify your API key and billing/quotas with the provider")
+            console.print("  3. Try a smaller or more widely available model name")
 
     def cmd_models(self, args: list):
         """

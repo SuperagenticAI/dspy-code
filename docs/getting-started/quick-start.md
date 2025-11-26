@@ -92,9 +92,22 @@ You'll see a beautiful welcome screen with the DSPy version and helpful tips.
 
 Before you do anything else in the CLI, you **must connect to a model**. DSPy Code relies on an LLM for code generation and understanding.
 
+**Easiest (recommended): use the interactive selector**
+
+```bash
+/model
+```
+
+This lets you:
+
+- Choose **Ollama** local models from a numbered list
+- Choose a **cloud provider** (OpenAI, Anthropic, Gemini) and then type a model name (for example `gpt-5-nano`, `claude-sonnet-4.5`, `gemini-2.5-flash`)
+
+**Direct connect (advanced users):**
+
 ```bash
 # Ollama (local, free)
-/connect ollama llama3.1:8b
+/connect ollama gpt-oss:120b
 
 # Or OpenAI (example small model)
 /connect openai gpt-5-nano

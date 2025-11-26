@@ -4,13 +4,18 @@ DSPy Code supports **natural language for all commands**! You don't need to reme
 
 ## 🎯 How It Works
 
-Instead of typing `/connect ollama llama3.1:8b`, you can simply say:
+Instead of remembering exact slash commands, you can either:
+
+- Use the **interactive selector**: `/model`
+- Or just describe what you want in natural language.
+
+For example, instead of typing `/connect ollama gpt-oss:120b`, you can say:
 
 ```
-connect to ollama llama3.1:8b
+connect to ollama gpt-oss:120b
 ```
 
-DSPy Code automatically understands your intent and routes it to the appropriate command.
+DSPy Code automatically understands your intent and routes it to the appropriate command (for example, `/model` or `/connect`).
 
 ---
 
@@ -18,13 +23,20 @@ DSPy Code automatically understands your intent and routes it to the appropriate
 
 ### Connection Commands
 
-**Instead of:** `/connect ollama llama3.1:8b`  
+**Instead of:** `/model` (interactive selector)  
 **You can say:**
-- "connect to ollama llama3.1:8b"
-- "use model ollama llama3.1:8b"
-- "switch to ollama llama3.1:8b"
-- "set up model ollama llama3.1:8b"
-- "configure model ollama llama3.1:8b"
+- "help me pick a model"
+- "connect a model for me"
+- "set up a model"
+- "select a model to use"
+
+**Instead of:** `/connect ollama gpt-oss:120b`  
+**You can say:**
+- "connect to ollama gpt-oss:120b"
+- "use model ollama gpt-oss:120b"
+- "switch to ollama gpt-oss:120b"
+- "set up model ollama gpt-oss:120b"
+- "configure model ollama gpt-oss:120b"
 
 **Instead of:** `/disconnect`  
 **You can say:**

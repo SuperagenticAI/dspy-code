@@ -218,6 +218,15 @@ class LLMConnector:
         """Generate response from Ollama."""
         endpoint = self.config_manager.config.models.ollama_endpoint or "http://localhost:11434"
 
+        # Allow overriding the HTTP timeout for slow/large models via environment.
+        # Default is 120s (2 minutes) to better support large models.
+        try:
+            from os import getenv
+
+            timeout = int(getenv("OLLAMA_HTTP_TIMEOUT", "120"))
+        except Exception:
+            timeout = 120
+
         # Build the full prompt with context
         full_prompt = self._build_prompt_with_context(prompt, system_prompt, context)
 
@@ -225,7 +234,7 @@ class LLMConnector:
             response = requests.post(
                 f"{endpoint}/api/generate",
                 json={"model": self.current_model, "prompt": full_prompt, "stream": False},
-                timeout=60,
+                timeout=timeout,
             )
             response.raise_for_status()
 

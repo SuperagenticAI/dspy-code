@@ -67,6 +67,9 @@ source .venv/bin/activate.fish
     ```bash
     # If you use uv, you can install dspy-code like this
     uv pip install --upgrade dspy-code
+
+    # Or add it to your project dependencies (pyproject.toml) in one step
+    uv add dspy-code
     ```
 
 That's it! DSPy Code is now installed in your project.

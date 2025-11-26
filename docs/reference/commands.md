@@ -65,9 +65,20 @@ Generate DSPy Signatures, Modules, or complete programs.
 
 ## Model Connection
 
+### `/model` - Interactive model selection
+
+Interactively choose and connect to a model (local via Ollama or cloud).
+
+**Usage:**
+```
+/model
+```
+
+Use this if you're not sure which model to pick or don't want to type the full `/connect` command.
+
 ### `/connect` - Connect to LLM
 
-Connect to a language model for code generation and execution.
+Connect to a language model for code generation and execution when you already know the model name.
 
 **Usage:**
 ```
@@ -76,16 +87,15 @@ Connect to a language model for code generation and execution.
 
 **Providers:**
 - `ollama` - Local models via Ollama
-- `openai` - OpenAI models (GPT-4, GPT-3.5)
+- `openai` - OpenAI models (GPT-4, GPT-5 family)
 - `anthropic` - Claude models
 - `gemini` - Google Gemini models
 
 **Examples:**
 ```
-/connect ollama llama3.1:8b
+/connect ollama gpt-oss:120b
 /connect openai gpt-5-nano
 /connect anthropic claude-sonnet-4.5
-/connect anthropic claude-opus-4.5
 /connect gemini gemini-2.5-flash
 ```
 

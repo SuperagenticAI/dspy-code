@@ -93,7 +93,7 @@ Use `/` prefix for specific commands:
 ```
 /help
 /init
-/connect ollama llama3.1:8b
+/model
 /save my_module.py
 /validate
 /run
@@ -223,7 +223,8 @@ Clear conversation history:
 **2. Connect model:**
 
 ```
-→ /connect ollama llama3.1:8b
+→ /model
+  [Pick Ollama vs cloud, then choose a model]
   ✓ Connected!
 ```
 
