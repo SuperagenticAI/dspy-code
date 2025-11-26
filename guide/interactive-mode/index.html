@@ -38,7 +38,7 @@
 </code></pre></div> <div class=highlight><pre><span></span><code><a id=__codelineno-4-1 name=__codelineno-4-1 href=#__codelineno-4-1></a>Generate a complete RAG system for document Q&amp;A
 </code></pre></div> <p>DSPy Code understands your intent and generates appropriate code!</p> <h3 id=slash-commands>Slash Commands</h3> <p>Use <code>/</code> prefix for specific commands:</p> <div class=highlight><pre><span></span><code><a id=__codelineno-5-1 name=__codelineno-5-1 href=#__codelineno-5-1></a>/help
 <a id=__codelineno-5-2 name=__codelineno-5-2 href=#__codelineno-5-2></a>/init
-<a id=__codelineno-5-3 name=__codelineno-5-3 href=#__codelineno-5-3></a>/connect ollama llama3.1:8b
+<a id=__codelineno-5-3 name=__codelineno-5-3 href=#__codelineno-5-3></a>/model
 <a id=__codelineno-5-4 name=__codelineno-5-4 href=#__codelineno-5-4></a>/save my_module.py
 <a id=__codelineno-5-5 name=__codelineno-5-5 href=#__codelineno-5-5></a>/validate
 <a id=__codelineno-5-6 name=__codelineno-5-6 href=#__codelineno-5-6></a>/run
@@ -88,8 +88,9 @@
 </code></pre></div> <h3 id=clear-context>Clear Context</h3> <p>Clear conversation history:</p> <div class=highlight><pre><span></span><code><a id=__codelineno-13-1 name=__codelineno-13-1 href=#__codelineno-13-1></a>/clear
 </code></pre></div> <p><strong>What's cleared:</strong></p> <ul> <li>Conversation history</li> <li>Generated code</li> <li>Generated data</li> </ul> <p><strong>What's kept:</strong></p> <ul> <li>Model connection</li> <li>Project configuration</li> <li>Codebase index</li> </ul> <h2 id=conversation-flow>Conversation Flow</h2> <h3 id=typical-workflow>Typical Workflow</h3> <p><strong>1. Initialize project:</strong></p> <div class=highlight><pre><span></span><code><a id=__codelineno-14-1 name=__codelineno-14-1 href=#__codelineno-14-1></a>→ /init
 <a id=__codelineno-14-2 name=__codelineno-14-2 href=#__codelineno-14-2></a>  [Project setup]
-</code></pre></div> <p><strong>2. Connect model:</strong></p> <div class=highlight><pre><span></span><code><a id=__codelineno-15-1 name=__codelineno-15-1 href=#__codelineno-15-1></a>→ /connect ollama llama3.1:8b
-<a id=__codelineno-15-2 name=__codelineno-15-2 href=#__codelineno-15-2></a>  ✓ Connected!
+</code></pre></div> <p><strong>2. Connect model:</strong></p> <div class=highlight><pre><span></span><code><a id=__codelineno-15-1 name=__codelineno-15-1 href=#__codelineno-15-1></a>→ /model
+<a id=__codelineno-15-2 name=__codelineno-15-2 href=#__codelineno-15-2></a>  [Pick Ollama vs cloud, then choose a model]
+<a id=__codelineno-15-3 name=__codelineno-15-3 href=#__codelineno-15-3></a>  ✓ Connected!
 </code></pre></div> <p><strong>3. Generate code:</strong></p> <div class=highlight><pre><span></span><code><a id=__codelineno-16-1 name=__codelineno-16-1 href=#__codelineno-16-1></a>→ Create a text classifier
 <a id=__codelineno-16-2 name=__codelineno-16-2 href=#__codelineno-16-2></a>  [Code generated]
 </code></pre></div> <p><strong>4. Save code:</strong></p> <div class=highlight><pre><span></span><code><a id=__codelineno-17-1 name=__codelineno-17-1 href=#__codelineno-17-1></a>→ /save classifier.py
