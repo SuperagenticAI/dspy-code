@@ -539,38 +539,52 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
             rag_config = self.config_manager.config.codebase_rag
             rag_enabled = rag_config.enabled if rag_config else True
             fast_mode = rag_config.fast_mode if rag_config else False
-            
+
             # RAG status
             if self.codebase_rag and self.codebase_rag.enabled:
                 if self.codebase_rag.index:
                     element_count = len(self.codebase_rag.index.elements)
                     rag_status = f"[cyan]RAG Mode:[/cyan] [green]ON[/green] ({element_count} elements indexed)"
                 else:
-                    rag_status = "[cyan]RAG Mode:[/cyan] [yellow]ON[/yellow] (no index - run /init to build)"
+                    rag_status = (
+                        "[cyan]RAG Mode:[/cyan] [yellow]ON[/yellow] (no index - run /init to build)"
+                    )
             else:
                 rag_status = "[cyan]RAG Mode:[/cyan] [red]OFF[/red] (use /enable-rag to enable)"
-            
+
             # Fast Mode status
-            fast_status = f"[cyan]Fast Mode:[/cyan] [green]ON[/green]" if fast_mode else f"[cyan]Fast Mode:[/cyan] [yellow]OFF[/yellow]"
-            
+            fast_status = (
+                "[cyan]Fast Mode:[/cyan] [green]ON[/green]"
+                if fast_mode
+                else "[cyan]Fast Mode:[/cyan] [yellow]OFF[/yellow]"
+            )
+
             console.print()
             console.print("[bold]Performance Settings:[/bold]")
             console.print(f"  {rag_status}")
             console.print(f"  {fast_status}")
-            
+
             # Add humorous message about quality vs speed
             if rag_enabled and not fast_mode:
                 console.print()
                 console.print("[dim]💡 Awesomeness takes time (but you can toggle anytime!)[/dim]")
-                console.print("[dim]   Use [cyan]/fast-mode on[/cyan] for faster responses or check [cyan]/status[/cyan] for details[/dim]")
+                console.print(
+                    "[dim]   Use [cyan]/fast-mode on[/cyan] for faster responses or check [cyan]/status[/cyan] for details[/dim]"
+                )
             elif not rag_enabled:
                 console.print()
                 console.print("[dim]💡 RAG disabled - faster startup, lower code quality[/dim]")
-                console.print("[dim]   Use [cyan]/enable-rag[/cyan] to enable or check [cyan]/status[/cyan] for details[/dim]")
+                console.print(
+                    "[dim]   Use [cyan]/enable-rag[/cyan] to enable or check [cyan]/status[/cyan] for details[/dim]"
+                )
             elif fast_mode:
                 console.print()
-                console.print("[dim]💡 Fast mode enabled - quick responses, slightly lower quality[/dim]")
-                console.print("[dim]   Use [cyan]/fast-mode off[/cyan] for better quality or check [cyan]/status[/cyan] for details[/dim]")
+                console.print(
+                    "[dim]💡 Fast mode enabled - quick responses, slightly lower quality[/dim]"
+                )
+                console.print(
+                    "[dim]   Use [cyan]/fast-mode off[/cyan] for better quality or check [cyan]/status[/cyan] for details[/dim]"
+                )
         except Exception as e:
             logger.debug(f"Error showing performance status: {e}")
             console.print("[dim]Performance: Status unknown[/dim]")
@@ -1917,11 +1931,7 @@ Be conversational, helpful, and use the context to provide accurate information.
         }
 
         # Check if RAG is enabled and not in fast mode
-        rag_enabled = (
-            self.codebase_rag
-            and self.codebase_rag.enabled
-            and not self._is_fast_mode()
-        )
+        rag_enabled = self.codebase_rag and self.codebase_rag.enabled and not self._is_fast_mode()
 
         # Add comprehensive RAG context from DSPy and GEPA source code
         if rag_enabled:
@@ -1954,17 +1964,23 @@ Be conversational, helpful, and use the context to provide accurate information.
                     if any(word in user_lower for word in ["react", "agent", "tool", "action"]):
                         specific_queries.append("dspy.ReAct agent tools")
                     if any(
-                        word in user_lower for word in ["gepa", "optimize", "optimization", "genetic"]
+                        word in user_lower
+                        for word in ["gepa", "optimize", "optimization", "genetic"]
                     ):
                         specific_queries.append("GEPA Genetic Pareto optimization")
                     if any(word in user_lower for word in ["chain", "thought", "reasoning", "cot"]):
                         specific_queries.append("dspy.ChainOfThought reasoning")
-                    if any(word in user_lower for word in ["signature", "input", "output", "field"]):
+                    if any(
+                        word in user_lower for word in ["signature", "input", "output", "field"]
+                    ):
                         specific_queries.append("dspy.Signature InputField OutputField")
-                    if any(word in user_lower for word in ["mcp", "model context protocol", "server"]):
+                    if any(
+                        word in user_lower for word in ["mcp", "model context protocol", "server"]
+                    ):
                         specific_queries.append("MCP Model Context Protocol client")
                     if any(
-                        word in user_lower for word in ["async", "streaming", "streamify", "asyncify"]
+                        word in user_lower
+                        for word in ["async", "streaming", "streamify", "asyncify"]
                     ):
                         specific_queries.append("dspy async streaming asyncify streamify")
                     if any(word in user_lower for word in ["adapter", "json", "xml", "chat"]):
@@ -1985,7 +2001,9 @@ Be conversational, helpful, and use the context to provide accurate information.
                         context["additional_examples"] = "\n".join(additional_context)
                         logger.debug(f"Added {len(additional_context)} additional context sections")
                 else:
-                    logger.debug("Skipping pattern-specific searches (skip_pattern_searches enabled)")
+                    logger.debug(
+                        "Skipping pattern-specific searches (skip_pattern_searches enabled)"
+                    )
 
             except Exception as e:
                 logger.warning(f"Failed to get RAG context: {e}")
@@ -2026,16 +2044,16 @@ Be conversational, helpful, and use the context to provide accurate information.
     def _show_performance_tip_if_needed(self, generation_time: float):
         """Show performance tip after slow response."""
         # Only show once per session
-        if hasattr(self, '_performance_tip_shown'):
+        if hasattr(self, "_performance_tip_shown"):
             return
-        
+
         # Only show if RAG enabled and fast mode disabled
         if not (self.codebase_rag and self.codebase_rag.enabled):
             return
-        
+
         if self._is_fast_mode():
             return
-        
+
         console.print()
         console.print(
             f"[dim]⏱️  That took {generation_time:.1f}s. "
@@ -2044,7 +2062,7 @@ Be conversational, helpful, and use the context to provide accurate information.
         )
         console.print("[dim]   Or check [cyan]/status[/cyan] for all performance settings[/dim]")
         console.print()
-        
+
         self._performance_tip_shown = True
 
     def _build_template_context(self, user_input: str) -> str:
@@ -2288,14 +2306,15 @@ Generate code that ACTUALLY solves the user's specific problem using real DSPy p
 
                 # Generate with LLM (track time for performance tips)
                 import time
+
                 start_time = time.time()
-                
+
                 response = self.llm_connector.generate_response(
                     prompt=enhanced_prompt, system_prompt=system_prompt, context=context
                 )
-                
+
                 generation_time = time.time() - start_time
-                
+
                 # Show performance tip if slow
                 if generation_time > 3.0:
                     self._show_performance_tip_if_needed(generation_time)
@@ -2513,14 +2532,15 @@ Generate code that ACTUALLY solves the user's specific problem using real DSPy p
 
                 # Generate with LLM (track time for performance tips)
                 import time
+
                 start_time = time.time()
-                
+
                 response = self.llm_connector.generate_response(
                     prompt=enhanced_prompt, system_prompt=system_prompt, context=context
                 )
-                
+
                 generation_time = time.time() - start_time
-                
+
                 # Show performance tip if slow
                 if generation_time > 3.0:
                     self._show_performance_tip_if_needed(generation_time)

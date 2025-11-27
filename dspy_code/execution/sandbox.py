@@ -59,8 +59,8 @@ class ExecutionSandbox:
             # Execute in subprocess
             try:
                 # Prefer Python from project venv if available
-                from ..core.venv_utils import get_project_python
                 from ..core.logging import get_logger
+                from ..core.venv_utils import get_project_python
 
                 logger = get_logger(__name__)
                 python_exe = get_project_python(Path.cwd())
