@@ -43,6 +43,9 @@ class CodebaseRAGConfig:
     """Configuration for codebase RAG system."""
 
     enabled: bool = True
+    # Performance options
+    fast_mode: bool = False  # Skip RAG context building for faster responses
+    skip_pattern_searches: bool = False  # Skip additional pattern-specific searches
     codebases: list[str] = field(default_factory=lambda: ["dspy-cli", "dspy", "gepa"])
     cache_dir: str | None = None  # Defaults to .dspy_code/cache/codebase_index in CWD
     max_cache_size_mb: int = 100

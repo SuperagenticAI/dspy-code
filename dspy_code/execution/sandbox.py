@@ -58,8 +58,21 @@ class ExecutionSandbox:
 
             # Execute in subprocess
             try:
+                # Prefer Python from project venv if available
+                from ..core.venv_utils import get_project_python
+                from ..core.logging import get_logger
+
+                logger = get_logger(__name__)
+                python_exe = get_project_python(Path.cwd())
+                if python_exe is None:
+                    # No project venv - fallback to sys.executable
+                    python_exe = Path(sys.executable)
+                    logger.debug("No project venv found - using sys.executable")
+                else:
+                    logger.debug(f"Using project venv Python: {python_exe}")
+
                 result = subprocess.run(
-                    [sys.executable, str(code_file)],
+                    [str(python_exe), str(code_file)],
                     capture_output=True,
                     text=True,
                     timeout=self.timeout,

@@ -259,6 +259,21 @@ def cli(verbose: bool, debug: bool, version: bool, skip_safety_check: bool):
     if not skip_safety_check:
         check_safe_working_directory()
 
+    # Check for project venv and warn if missing
+    from .core.venv_utils import check_project_venv
+
+    has_venv, warning = check_project_venv()
+    if not has_venv and warning:
+        console.print()
+        console.print(
+            Panel.fit(
+                warning,
+                title="⚠️  Virtual Environment Notice",
+                border_style="yellow",
+            )
+        )
+        console.print()
+
     # Setup logging
     setup_logging(verbose=verbose, debug=debug)
 

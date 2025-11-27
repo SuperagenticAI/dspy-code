@@ -480,7 +480,7 @@ class InteractiveSession:
             logger.debug(f"Auto-save restore check failed: {e}")
 
     def _show_welcome(self):
-        """Show welcome message with quick start commands."""
+        """Show welcome message with quick start commands and RAG status."""
         from rich.table import Table
 
         # Check model status
@@ -533,6 +533,47 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
         if model_name != "None":
             status_text += f" ([cyan]{model_name}[/cyan])"
         console.print(status_text)
+
+        # Show RAG and Fast Mode status with humor
+        try:
+            rag_config = self.config_manager.config.codebase_rag
+            rag_enabled = rag_config.enabled if rag_config else True
+            fast_mode = rag_config.fast_mode if rag_config else False
+            
+            # RAG status
+            if self.codebase_rag and self.codebase_rag.enabled:
+                if self.codebase_rag.index:
+                    element_count = len(self.codebase_rag.index.elements)
+                    rag_status = f"[cyan]RAG Mode:[/cyan] [green]ON[/green] ({element_count} elements indexed)"
+                else:
+                    rag_status = "[cyan]RAG Mode:[/cyan] [yellow]ON[/yellow] (no index - run /init to build)"
+            else:
+                rag_status = "[cyan]RAG Mode:[/cyan] [red]OFF[/red] (use /enable-rag to enable)"
+            
+            # Fast Mode status
+            fast_status = f"[cyan]Fast Mode:[/cyan] [green]ON[/green]" if fast_mode else f"[cyan]Fast Mode:[/cyan] [yellow]OFF[/yellow]"
+            
+            console.print()
+            console.print("[bold]Performance Settings:[/bold]")
+            console.print(f"  {rag_status}")
+            console.print(f"  {fast_status}")
+            
+            # Add humorous message about quality vs speed
+            if rag_enabled and not fast_mode:
+                console.print()
+                console.print("[dim]💡 Awesomeness takes time (but you can toggle anytime!)[/dim]")
+                console.print("[dim]   Use [cyan]/fast-mode on[/cyan] for faster responses or check [cyan]/status[/cyan] for details[/dim]")
+            elif not rag_enabled:
+                console.print()
+                console.print("[dim]💡 RAG disabled - faster startup, lower code quality[/dim]")
+                console.print("[dim]   Use [cyan]/enable-rag[/cyan] to enable or check [cyan]/status[/cyan] for details[/dim]")
+            elif fast_mode:
+                console.print()
+                console.print("[dim]💡 Fast mode enabled - quick responses, slightly lower quality[/dim]")
+                console.print("[dim]   Use [cyan]/fast-mode off[/cyan] for better quality or check [cyan]/status[/cyan] for details[/dim]")
+        except Exception as e:
+            logger.debug(f"Error showing performance status: {e}")
+            console.print("[dim]Performance: Status unknown[/dim]")
 
         if not self.llm_connector.current_model:
             console.print()
@@ -1875,61 +1916,84 @@ Be conversational, helpful, and use the context to provide accurate information.
             ),
         }
 
+        # Check if RAG is enabled and not in fast mode
+        rag_enabled = (
+            self.codebase_rag
+            and self.codebase_rag.enabled
+            and not self._is_fast_mode()
+        )
+
         # Add comprehensive RAG context from DSPy and GEPA source code
-        if self.codebase_rag and self.codebase_rag.enabled:
+        if rag_enabled:
             try:
-                # Get context (increased to 4000 tokens for richer examples)
-                rag_context = self.codebase_rag.build_context(user_input, max_tokens=4000, top_k=8)
+                # Get config values for performance tuning
+                rag_config = self.config_manager.config.codebase_rag
+                max_tokens = rag_config.max_context_tokens if rag_config else 4000
+                top_k = rag_config.search_top_k if rag_config else 8
+
+                # Get main context
+                rag_context = self.codebase_rag.build_context(
+                    user_input, max_tokens=max_tokens, top_k=top_k
+                )
                 if rag_context:
                     context["codebase_examples"] = rag_context
                     logger.debug("Added comprehensive RAG context from DSPy/GEPA source code")
 
-                # Also get specific examples for common patterns
-                specific_queries = []
-                user_lower = user_input.lower()
+                # Skip pattern-specific searches if configured
+                if not (rag_config and rag_config.skip_pattern_searches):
+                    # Also get specific examples for common patterns
+                    specific_queries = []
+                    user_lower = user_input.lower()
 
-                # Enhanced pattern matching for better context engineering
-                if any(
-                    word in user_lower
-                    for word in ["retrieve", "rag", "retrieval", "search", "document"]
-                ):
-                    specific_queries.append("dspy.Retrieve retrieval RAG")
-                if any(word in user_lower for word in ["react", "agent", "tool", "action"]):
-                    specific_queries.append("dspy.ReAct agent tools")
-                if any(
-                    word in user_lower for word in ["gepa", "optimize", "optimization", "genetic"]
-                ):
-                    specific_queries.append("GEPA Genetic Pareto optimization")
-                if any(word in user_lower for word in ["chain", "thought", "reasoning", "cot"]):
-                    specific_queries.append("dspy.ChainOfThought reasoning")
-                if any(word in user_lower for word in ["signature", "input", "output", "field"]):
-                    specific_queries.append("dspy.Signature InputField OutputField")
-                if any(word in user_lower for word in ["mcp", "model context protocol", "server"]):
-                    specific_queries.append("MCP Model Context Protocol client")
-                if any(
-                    word in user_lower for word in ["async", "streaming", "streamify", "asyncify"]
-                ):
-                    specific_queries.append("dspy async streaming asyncify streamify")
-                if any(word in user_lower for word in ["adapter", "json", "xml", "chat"]):
-                    specific_queries.append("dspy adapters JSONAdapter XMLAdapter ChatAdapter")
+                    # Enhanced pattern matching for better context engineering
+                    if any(
+                        word in user_lower
+                        for word in ["retrieve", "rag", "retrieval", "search", "document"]
+                    ):
+                        specific_queries.append("dspy.Retrieve retrieval RAG")
+                    if any(word in user_lower for word in ["react", "agent", "tool", "action"]):
+                        specific_queries.append("dspy.ReAct agent tools")
+                    if any(
+                        word in user_lower for word in ["gepa", "optimize", "optimization", "genetic"]
+                    ):
+                        specific_queries.append("GEPA Genetic Pareto optimization")
+                    if any(word in user_lower for word in ["chain", "thought", "reasoning", "cot"]):
+                        specific_queries.append("dspy.ChainOfThought reasoning")
+                    if any(word in user_lower for word in ["signature", "input", "output", "field"]):
+                        specific_queries.append("dspy.Signature InputField OutputField")
+                    if any(word in user_lower for word in ["mcp", "model context protocol", "server"]):
+                        specific_queries.append("MCP Model Context Protocol client")
+                    if any(
+                        word in user_lower for word in ["async", "streaming", "streamify", "asyncify"]
+                    ):
+                        specific_queries.append("dspy async streaming asyncify streamify")
+                    if any(word in user_lower for word in ["adapter", "json", "xml", "chat"]):
+                        specific_queries.append("dspy adapters JSONAdapter XMLAdapter ChatAdapter")
 
-                # Get additional context for specific patterns
-                additional_context = []
-                for query in specific_queries[:5]:  # Top 5 specific queries for better coverage
-                    specific_context = self.codebase_rag.build_context(
-                        query, max_tokens=2000, top_k=5
-                    )
-                    if specific_context:
-                        additional_context.append(
-                            f"\n# Additional Context: {query}\n{specific_context}"
+                    # Get additional context for specific patterns
+                    additional_context = []
+                    for query in specific_queries[:5]:  # Top 5 specific queries for better coverage
+                        specific_context = self.codebase_rag.build_context(
+                            query, max_tokens=2000, top_k=5
                         )
+                        if specific_context:
+                            additional_context.append(
+                                f"\n# Additional Context: {query}\n{specific_context}"
+                            )
 
-                if additional_context:
-                    context["additional_examples"] = "\n".join(additional_context)
-                    logger.debug(f"Added {len(additional_context)} additional context sections")
+                    if additional_context:
+                        context["additional_examples"] = "\n".join(additional_context)
+                        logger.debug(f"Added {len(additional_context)} additional context sections")
+                else:
+                    logger.debug("Skipping pattern-specific searches (skip_pattern_searches enabled)")
 
             except Exception as e:
                 logger.warning(f"Failed to get RAG context: {e}")
+        else:
+            if self.codebase_rag and not self.codebase_rag.enabled:
+                logger.debug("RAG disabled in config")
+            elif self._is_fast_mode():
+                logger.debug("Fast mode enabled - skipping RAG context")
 
         # Add template examples as reference (not direct responses)
         try:
@@ -1950,6 +2014,38 @@ Be conversational, helpful, and use the context to provide accurate information.
             logger.warning(f"Failed to get MCP context: {e}")
 
         return context
+
+    def _is_fast_mode(self) -> bool:
+        """Check if fast mode is enabled."""
+        try:
+            rag_config = self.config_manager.config.codebase_rag
+            return rag_config.fast_mode if rag_config else False
+        except:
+            return False
+
+    def _show_performance_tip_if_needed(self, generation_time: float):
+        """Show performance tip after slow response."""
+        # Only show once per session
+        if hasattr(self, '_performance_tip_shown'):
+            return
+        
+        # Only show if RAG enabled and fast mode disabled
+        if not (self.codebase_rag and self.codebase_rag.enabled):
+            return
+        
+        if self._is_fast_mode():
+            return
+        
+        console.print()
+        console.print(
+            f"[dim]⏱️  That took {generation_time:.1f}s. "
+            f"Want faster? Try [cyan]/fast-mode on[/cyan] "
+            f"(0.5-1s responses, slightly lower quality)[/dim]"
+        )
+        console.print("[dim]   Or check [cyan]/status[/cyan] for all performance settings[/dim]")
+        console.print()
+        
+        self._performance_tip_shown = True
 
     def _build_template_context(self, user_input: str) -> str:
         """Build template context as reference for LLM.
@@ -2190,10 +2286,19 @@ OUTPUT FORMAT:
 
 Generate code that ACTUALLY solves the user's specific problem using real DSPy patterns!"""
 
-                # Generate with LLM
+                # Generate with LLM (track time for performance tips)
+                import time
+                start_time = time.time()
+                
                 response = self.llm_connector.generate_response(
                     prompt=enhanced_prompt, system_prompt=system_prompt, context=context
                 )
+                
+                generation_time = time.time() - start_time
+                
+                # Show performance tip if slow
+                if generation_time > 3.0:
+                    self._show_performance_tip_if_needed(generation_time)
 
                 # Extract code from response
                 code = self._extract_code_from_response(response)
@@ -2406,10 +2511,19 @@ OUTPUT FORMAT:
 
 Generate code that ACTUALLY solves the user's specific problem using real DSPy patterns!"""
 
-                # Generate with LLM
+                # Generate with LLM (track time for performance tips)
+                import time
+                start_time = time.time()
+                
                 response = self.llm_connector.generate_response(
                     prompt=enhanced_prompt, system_prompt=system_prompt, context=context
                 )
+                
+                generation_time = time.time() - start_time
+                
+                # Show performance tip if slow
+                if generation_time > 3.0:
+                    self._show_performance_tip_if_needed(generation_time)
 
                 # Extract code from response
                 code = self._extract_code_from_response(response)

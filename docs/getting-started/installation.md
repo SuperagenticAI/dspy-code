@@ -31,18 +31,38 @@ cd my-dspy-project
 
 ### Step 2: Create Virtual Environment IN This Directory
 
-```bash
-# Create .venv INSIDE your project directory (not elsewhere!)
-python -m venv .venv
+=== "uv (Recommended)"
 
-# Activate it
-# For bash/zsh (macOS/Linux):
-source .venv/bin/activate
-# For fish shell:
-source .venv/bin/activate.fish
-# On Windows:
-.venv\Scripts\activate
-```
+    ```bash
+    # Create .venv INSIDE your project directory (not elsewhere!)
+    uv venv
+
+    # Activate it
+    # For bash/zsh (macOS/Linux):
+    source .venv/bin/activate
+    # For fish shell:
+    source .venv/bin/activate.fish
+    # On Windows:
+    .venv\Scripts\activate
+    ```
+
+=== "python -m venv"
+
+    ```bash
+    # Create .venv INSIDE your project directory (not elsewhere!)
+    python -m venv .venv
+
+    # Activate it
+    # For bash/zsh (macOS/Linux):
+    source .venv/bin/activate
+    # For fish shell:
+    source .venv/bin/activate.fish
+    # On Windows:
+    .venv\Scripts\activate
+    ```
+
+!!! tip "Why uv?"
+    `uv` is a fast Python package manager written in Rust. It's 10-100x faster than pip and provides better dependency resolution. [Learn more about uv](https://docs.astral.sh/uv/)
 
 !!! success "Why .venv in the Project?"
     When you create the virtual environment inside your project:
@@ -55,21 +75,21 @@ source .venv/bin/activate.fish
 
 ### Step 3: Install DSPy Code
 
+=== "uv (Recommended)"
+
+    ```bash
+    # This installs into .venv/ in your project
+    uv pip install --upgrade dspy-code
+
+    # Or add it to your project dependencies (pyproject.toml) in one step
+    uv add dspy-code
+    ```
+
 === "pip"
 
     ```bash
     # This installs into .venv/ in your project
     pip install --upgrade dspy-code
-    ```
-
-=== "uv"
-
-    ```bash
-    # If you use uv, you can install dspy-code like this
-    uv pip install --upgrade dspy-code
-
-    # Or add it to your project dependencies (pyproject.toml) in one step
-    uv add dspy-code
     ```
 
 That's it! DSPy Code is now installed in your project.
@@ -78,16 +98,19 @@ That's it! DSPy Code is now installed in your project.
 
 DSPy Code will install DSPy automatically if needed, but you can install/upgrade it explicitly:
 
+!!! tip "Use the same tool you used for venv"
+    If you created your venv with `uv venv`, use `uv pip install` for consistency. If you used `python -m venv`, use `pip install`.
+
+=== "uv (Recommended)"
+
+    ```bash
+    uv pip install --upgrade dspy
+    ```
+
 === "pip"
 
     ```bash
     pip install --upgrade dspy
-    ```
-
-=== "uv"
-
-    ```bash
-    uv pip install --upgrade dspy
     ```
 
 !!! info "DSPy Version"
@@ -156,7 +179,26 @@ DSPy Code has optional dependencies for different features. Install only what yo
 
 ### Cloud Model Providers (via dspy-code extras)
 
-Use extras so versions stay aligned with dspy-code’s tested matrix.
+Use extras so versions stay aligned with dspy-code's tested matrix.
+
+!!! tip "Use the same tool you used for venv"
+    If you created your venv with `uv venv`, use `uv pip install` for consistency. If you used `python -m venv`, use `pip install`.
+
+=== "uv (Recommended)"
+
+    ```bash
+    # OpenAI support
+    uv pip install "dspy-code[openai]"
+
+    # Google Gemini support
+    uv pip install "dspy-code[gemini]"
+
+    # Anthropic (paid key required)
+    uv pip install "dspy-code[anthropic]"
+
+    # Or install all cloud providers at once
+    uv pip install "dspy-code[llm-all]"
+    ```
 
 === "pip"
 
@@ -172,22 +214,6 @@ Use extras so versions stay aligned with dspy-code’s tested matrix.
 
     # Or install all cloud providers at once
     pip install "dspy-code[llm-all]"
-    ```
-
-=== "uv"
-
-    ```bash
-    # OpenAI support
-    uv pip install "dspy-code[openai]"
-
-    # Google Gemini support
-    uv pip install "dspy-code[gemini]"
-
-    # Anthropic (paid key required)
-    uv pip install "dspy-code[anthropic]"
-
-    # Or install all cloud providers at once
-    uv pip install "dspy-code[llm-all]"
     ```
 
 > **Note:** Anthropic has discontinued free API keys. DSPy Code fully supports Claude **if you already have a paid API key**, but Anthropic integration will simply not work without one.

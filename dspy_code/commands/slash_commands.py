@@ -125,6 +125,9 @@ class SlashCommandHandler:
             # RAG commands
             "/refresh-index": self.cmd_refresh_index,
             "/index-status": self.cmd_index_status,
+            "/fast-mode": self.cmd_fast_mode,
+            "/disable-rag": self.cmd_disable_rag,
+            "/enable-rag": self.cmd_enable_rag,
             # Data generation commands
             "/save-data": self.cmd_save_data,
             # Template/Example commands
@@ -665,6 +668,51 @@ class SlashCommandHandler:
             console.print(
                 "[yellow]⚠[/yellow] No model connected ([cyan]/connect[/cyan] to connect)"
             )
+
+        console.print()
+
+        # Performance Settings
+        try:
+            rag_config = self.config_manager.config.codebase_rag
+            rag_enabled = rag_config.enabled if rag_config else True
+            fast_mode = rag_config.fast_mode if rag_config else False
+            
+            console.print("[bold]⚡ Performance Settings:[/bold]")
+            
+            # RAG status
+            if rag_enabled:
+                rag_status = "[green]ON[/green]"
+                if hasattr(self, "parent_session") and self.parent_session:
+                    if self.parent_session.codebase_rag and self.parent_session.codebase_rag.index:
+                        element_count = len(self.parent_session.codebase_rag.index.elements)
+                        rag_status += f" ({element_count} elements indexed)"
+                    else:
+                        rag_status += " (no index - run /init)"
+            else:
+                rag_status = "[red]OFF[/red]"
+            
+            console.print(f"  [cyan]RAG Mode:[/cyan] {rag_status}")
+            
+            # Fast Mode status
+            fast_status = "[green]ON[/green]" if fast_mode else "[yellow]OFF[/yellow]"
+            console.print(f"  [cyan]Fast Mode:[/cyan] {fast_status}")
+            
+            # Show tips based on current settings
+            if rag_enabled and not fast_mode:
+                console.print()
+                console.print("[dim]💡 Awesomeness takes time (but you can toggle anytime!)[/dim]")
+                console.print("[dim]   Use [cyan]/fast-mode on[/cyan] for faster responses (0.5-1s)[/dim]")
+            elif not rag_enabled:
+                console.print()
+                console.print("[dim]💡 RAG disabled - faster startup, lower code quality[/dim]")
+                console.print("[dim]   Use [cyan]/enable-rag[/cyan] for better code quality[/dim]")
+            elif fast_mode:
+                console.print()
+                console.print("[dim]💡 Fast mode enabled - quick responses, slightly lower quality[/dim]")
+                console.print("[dim]   Use [cyan]/fast-mode off[/cyan] for better quality[/dim]")
+            
+        except Exception as e:
+            logger.debug(f"Error showing performance settings: {e}")
 
         console.print()
 
@@ -1600,6 +1648,13 @@ class SlashCommandHandler:
   [yellow]/streaming[/yellow]                          - Show streaming output examples
   [yellow]/data[/yellow] [task] [count]                - Generate training data (gold examples)
   [yellow]/history[/yellow] [all]                     - Show conversation history
+
+[bold magenta]RAG & Performance:[/bold magenta]
+  [yellow]/refresh-index[/yellow] [--force]           - Rebuild codebase index
+  [yellow]/index-status[/yellow]                      - Show RAG index status and stats
+  [yellow]/fast-mode[/yellow] [on|off]                - Toggle fast mode (disable RAG for faster responses)
+  [yellow]/disable-rag[/yellow]                       - Disable RAG completely (fastest mode)
+  [yellow]/enable-rag[/yellow]                        - Re-enable RAG (better code quality)
 
 [bold magenta]Session Management:[/bold magenta]
   [yellow]/sessions[/yellow]                          - List all saved sessions
@@ -2924,6 +2979,94 @@ DSPy Code is your AI-powered assistant for building DSPy programs. It helps you:
 
         except Exception as e:
             show_error_message(f"Error getting index status: {e}")
+
+    def cmd_fast_mode(self, args: list):
+        """
+        Enable/disable fast mode for faster responses.
+
+        Usage:
+            /fast-mode on    - Enable fast mode (disable RAG context building)
+            /fast-mode off   - Disable fast mode (enable RAG context building)
+            /fast-mode       - Show current status
+        """
+        if not args:
+            # Show status
+            try:
+                rag_config = self.config_manager.config.codebase_rag
+                is_fast = rag_config.fast_mode if rag_config else False
+                status = "enabled" if is_fast else "disabled"
+                console.print()
+                console.print(f"[cyan]Fast mode:[/cyan] {status}")
+                if is_fast:
+                    console.print("[dim]RAG context building is disabled for faster responses[/dim]")
+                    console.print("[yellow]Note: Code generation quality may be reduced[/yellow]")
+                else:
+                    console.print("[dim]RAG context building is enabled for better code quality[/dim]")
+                console.print()
+                return
+            except Exception as e:
+                show_error_message(f"Error checking fast mode status: {e}")
+                return
+
+        action = args[0].lower()
+        try:
+            if action in ["on", "enable", "true", "1"]:
+                self.config_manager.config.codebase_rag.fast_mode = True
+                self.config_manager.save_config()
+                console.print()
+                show_success_message("Fast mode enabled")
+                console.print("[dim]RAG context building disabled - responses will be faster[/dim]")
+                console.print("[yellow]Note: Code generation quality may be reduced[/yellow]")
+                console.print()
+            elif action in ["off", "disable", "false", "0"]:
+                self.config_manager.config.codebase_rag.fast_mode = False
+                self.config_manager.save_config()
+                console.print()
+                show_success_message("Fast mode disabled")
+                console.print("[dim]RAG context building enabled - better code quality[/dim]")
+                console.print("[yellow]Note: Responses may be slower[/yellow]")
+                console.print()
+            else:
+                show_error_message("Usage: /fast-mode [on|off]")
+        except Exception as e:
+            show_error_message(f"Error setting fast mode: {e}")
+
+    def cmd_disable_rag(self, args: list):
+        """
+        Disable RAG indexing completely.
+
+        Usage:
+            /disable-rag     - Disable RAG (faster startup and responses)
+        """
+        try:
+            self.config_manager.config.codebase_rag.enabled = False
+            self.config_manager.save_config()
+            console.print()
+            show_success_message("RAG disabled")
+            console.print("[dim]RAG indexing disabled - faster startup and responses[/dim]")
+            console.print("[yellow]Note: Code generation quality may be significantly reduced[/yellow]")
+            console.print()
+        except Exception as e:
+            show_error_message(f"Error disabling RAG: {e}")
+
+    def cmd_enable_rag(self, args: list):
+        """
+        Enable RAG indexing.
+
+        Usage:
+            /enable-rag     - Enable RAG (better code quality, slower responses)
+        """
+        try:
+            self.config_manager.config.codebase_rag.enabled = True
+            self.config_manager.save_config()
+            console.print()
+            show_success_message("RAG enabled")
+            console.print("[dim]RAG indexing enabled - better code quality[/dim]")
+            console.print("[yellow]Note: Responses may be slower[/yellow]")
+            console.print("[dim]Run /init to build index if not already built[/dim]")
+            console.print()
+        except Exception as e:
+            show_error_message(f"Error enabling RAG: {e}")
 
     def cmd_save_data(self, args: list):
         """

@@ -301,6 +301,116 @@ List available prompts from connected MCP servers.
 
 ---
 
+## RAG & Performance
+
+### `/refresh-index` - Rebuild Codebase Index
+
+Rebuild the RAG codebase index for better code generation context.
+
+**Usage:**
+```
+/refresh-index [--force]
+```
+
+**Options:**
+- `--force` - Force rebuild even if cache is fresh
+
+**Examples:**
+```
+/refresh-index           # Rebuild if stale
+/refresh-index --force   # Force rebuild
+```
+
+**What it does:**
+- Re-indexes installed packages (dspy, gepa, mcp)
+- Updates project code index
+- Improves code generation quality
+
+---
+
+### `/index-status` - Show RAG Index Status
+
+Display current RAG index statistics and status.
+
+**Usage:**
+```
+/index-status
+```
+
+**Shows:**
+- Total indexed elements
+- Number of codebases
+- Cache size
+- Index age
+- Per-codebase statistics
+
+---
+
+### `/fast-mode` - Toggle Fast Mode
+
+Enable or disable fast mode for faster responses (disables RAG context building).
+
+**Usage:**
+```
+/fast-mode [on|off]
+```
+
+**Options:**
+- `on` - Enable fast mode (faster responses, lower code quality)
+- `off` - Disable fast mode (slower responses, better code quality)
+- (no args) - Show current status
+
+**Examples:**
+```
+/fast-mode on    # Enable fast mode
+/fast-mode off   # Disable fast mode
+/fast-mode       # Show current status
+```
+
+**Trade-offs:**
+- ✅ Faster responses (0.5-1s vs 2-5s)
+- ⚠️ Lower code generation quality (no real DSPy examples)
+- ✅ Still uses templates and reference docs
+
+---
+
+### `/disable-rag` - Disable RAG Completely
+
+Disable RAG indexing for maximum speed.
+
+**Usage:**
+```
+/disable-rag
+```
+
+**What it does:**
+- Disables RAG index loading
+- Disables all RAG searches
+- Fastest mode (0.3-0.8s responses)
+- Code generation uses templates only
+
+**Note:** Code generation quality will be significantly reduced. Use only if speed is critical.
+
+---
+
+### `/enable-rag` - Re-enable RAG
+
+Re-enable RAG indexing for better code quality.
+
+**Usage:**
+```
+/enable-rag
+```
+
+**What it does:**
+- Re-enables RAG indexing
+- Restores code generation quality
+- Slower responses (2-5s) but better code
+
+**Note:** Run `/init` to build index if not already built.
+
+---
+
 ## Session Management
 
 ### `/status` - Show Session Status

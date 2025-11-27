@@ -12,7 +12,11 @@ mkdir my-dspy-project
 cd my-dspy-project
 
 # 2. Create a virtual environment INSIDE this directory
-python -m venv .venv
+# Recommended: Use uv (faster and more reliable)
+uv venv
+
+# Alternative: Use standard Python venv
+# python -m venv .venv
 
 # 3. Activate the virtual environment
 # For bash/zsh (macOS/Linux):
@@ -23,23 +27,27 @@ source .venv/bin/activate.fish
 .venv\Scripts\activate
 
 # 4. Install dspy-code (always upgrade for latest features)
-pip install --upgrade dspy-code
+# Recommended: Use uv
+uv pip install --upgrade dspy-code
+
+# Alternative: Use pip
+# pip install --upgrade dspy-code
 
 # 5. (Optional but recommended) Install provider SDKs via dspy-code extras
 
 # If you ONLY want local models (Ollama), you can skip this step.
 
-# OpenAI support
-pip install "dspy-code[openai]"
+# If using uv (recommended):
+uv pip install "dspy-code[openai]"      # OpenAI support
+uv pip install "dspy-code[gemini]"     # Google Gemini support
+uv pip install "dspy-code[anthropic]"  # Anthropic (paid key required)
+uv pip install "dspy-code[llm-all]"   # Or install all cloud providers at once
 
-# Google Gemini support
-pip install "dspy-code[gemini]"
-
-# Anthropic (paid key required)
-pip install "dspy-code[anthropic]"
-
-# Or install all cloud providers at once
-pip install "dspy-code[llm-all]"
+# If using pip:
+# pip install "dspy-code[openai]"
+# pip install "dspy-code[gemini]"
+# pip install "dspy-code[anthropic]"
+# pip install "dspy-code[llm-all]"
 ```
 
 For more details, see the [Installation Guide](installation.md).
