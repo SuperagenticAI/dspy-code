@@ -81,6 +81,10 @@
          <lastmod>2025-11-28</lastmod>
     </url>
     <url>
+         <loc>https://superagenticai.github.io/dspy-code/guide/mcp-overview/</loc>
+         <lastmod>2025-11-28</lastmod>
+    </url>
+    <url>
          <loc>https://superagenticai.github.io/dspy-code/guide/model-connection/</loc>
          <lastmod>2025-11-28</lastmod>
     </url>
@@ -137,7 +141,19 @@
          <lastmod>2025-11-28</lastmod>
     </url>
     <url>
+         <loc>https://superagenticai.github.io/dspy-code/tutorials/examples/</loc>
+         <lastmod>2025-11-28</lastmod>
+    </url>
+    <url>
          <loc>https://superagenticai.github.io/dspy-code/tutorials/gepa-optimization/</loc>
+         <lastmod>2025-11-28</lastmod>
+    </url>
+    <url>
+         <loc>https://superagenticai.github.io/dspy-code/tutorials/mcp-filesystem-assistant/</loc>
+         <lastmod>2025-11-28</lastmod>
+    </url>
+    <url>
+         <loc>https://superagenticai.github.io/dspy-code/tutorials/mcp-github-triage/</loc>
          <lastmod>2025-11-28</lastmod>
     </url>
     <url>
