@@ -88,19 +88,19 @@ def sentiment_accuracy_with_feedback(gold, pred, trace=None, pred_name=None, pre
     """
     Evaluate sentiment prediction and provide feedback for GEPA.
 
-    GEPA requires a metric with 5 arguments:
-    - gold: The gold standard example
-    - pred: The prediction
-    - trace: Optional trace
+    GEPA requires a metric with exactly 5 arguments:
+    - gold: The gold standard example (dspy.Example)
+    - pred: The prediction (dspy.Prediction)
+    - trace: Optional execution trace
     - pred_name: Optional prediction name
     - pred_trace: Optional prediction trace
 
     GEPA uses the feedback to evolve better prompts through reflection.
 
     Returns:
-        (score, feedback) tuple where:
-        - score: 1.0 for correct, 0.0 for incorrect
-        - feedback: Textual explanation for GEPA to learn from
+        - float (score): When prediction is correct (1.0)
+        - dict: When incorrect, returns {'score': 0.0, 'feedback': str}
+        This format matches GEPA's expected metric return type.
     """
     predicted = pred.sentiment.lower().strip()
     expected = gold.sentiment.lower().strip()
@@ -109,14 +109,14 @@ def sentiment_accuracy_with_feedback(gold, pred, trace=None, pred_name=None, pre
     correct = predicted == expected
     score = 1.0 if correct else 0.0
 
-    # Generate feedback for GEPA
+    # GEPA expects: return score (float) when correct, or dict with score+feedback when incorrect
+    # This matches the format used in dspy_code/generators/gepa_generator.py
     if correct:
-        feedback = f"Correct! Predicted '{predicted}' matches expected '{expected}'."
+        return score
     else:
         feedback = f"Incorrect. Expected '{expected}' but got '{predicted}'. "
         feedback += "Consider analyzing the text more carefully for sentiment indicators."
-
-    return score, feedback
+        return {"score": score, "feedback": feedback}
 
 
 # Step 5: Optimize with GEPA (Genetic Pareto)
@@ -157,13 +157,20 @@ def optimize_with_gepa(module: dspy.Module, examples: list[dspy.Example]):
     # Configure GEPA optimizer
     # GEPA uses genetic algorithms to evolve better prompts
     # The metric must return (score, feedback) tuple for GEPA to work
-    optimizer = GEPA(metric=sentiment_accuracy_with_feedback, reflection_lm=reflection_lm)
+    # max_metric_calls limits the number of metric evaluations (budget control)
+    optimizer = GEPA(
+        metric=sentiment_accuracy_with_feedback,
+        reflection_lm=reflection_lm,
+        max_metric_calls=30,  # Budget: 30 metric evaluations for this demo
+    )
 
     print("⚙️  GEPA Configuration:")
     print("   • Using GEPA (Genetic Pareto) optimizer")
     print("   • Reflection LM: ollama/llama3.1:8b")
-    print("   • Metric: sentiment_accuracy_with_feedback (returns score + feedback)")
-    print("   • Estimated time: 5-15 minutes")
+    print("   • Metric: sentiment_accuracy_with_feedback")
+    print("     (returns float when correct, dict with feedback when incorrect)")
+    print("   • Budget: 30 metric calls (for demo - increase for production)")
+    print("   • Estimated time: 3-10 minutes")
     print()
 
     # Compile (optimize) the module
@@ -183,7 +190,12 @@ def optimize_with_gepa(module: dspy.Module, examples: list[dspy.Example]):
     correct = 0
     for example in val_examples:
         prediction = optimized_module(text=example.text)
-        score, _ = sentiment_accuracy_with_feedback(example, prediction, None, None, None)
+        result = sentiment_accuracy_with_feedback(example, prediction, None, None, None)
+        # Handle both return formats: float (correct) or dict (incorrect with feedback)
+        if isinstance(result, dict):
+            score = result["score"]
+        else:
+            score = result
         if score == 1.0:
             correct += 1
 

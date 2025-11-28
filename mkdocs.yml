@@ -132,6 +132,7 @@ nav:
     - 📊 Creating Gold Data: guide/creating-gold-data.md
 
   - 🎓 Tutorials:
+    - 📚 Running Examples: tutorials/examples.md
     - 😊 Build a Sentiment Analyzer: tutorials/sentiment-analyzer.md
     - 🔍 Create a RAG System: tutorials/rag-system.md
     - ❓ Question Answering: tutorials/question-answering.md
