@@ -125,5 +125,3 @@ You can change the owner/repo values at the bottom of the script to point to you
 
 Once this pattern is working, you can layer more MCP servers (databases, Slack, CI, etc.)
 to build a fully automated triage pipeline powered by DSPy.
-
-

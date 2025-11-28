@@ -356,5 +356,3 @@ other MCP servers (databases, APIs, search) for richer workflows.
 2. Verify your `dspy_config.yaml` matches the example format exactly
 3. Test the MCP server standalone: `npx -y @modelcontextprotocol/server-filesystem /your/path`
 4. See the [Advanced MCP Integration](../advanced/mcp-integration.md) guide for more details
-
-

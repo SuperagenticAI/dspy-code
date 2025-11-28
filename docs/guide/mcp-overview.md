@@ -83,5 +83,3 @@ For deeper details on transports, configuration, and advanced patterns, see:
 
 Once you’ve connected one or more MCP servers, you can simply **describe the workflow you want**
 in natural language and let DSPy Code generate DSPy programs that call those tools behind the scenes.
-
-
