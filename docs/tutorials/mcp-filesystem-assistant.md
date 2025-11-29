@@ -105,10 +105,12 @@ mcp_servers:
       args:
         - -y
         - "@modelcontextprotocol/server-filesystem"
-        - /absolute/path/to/your/project
-    timeout_seconds: 30
+        - /tmp/city/
+    timeout_seconds: 60
     retry_attempts: 3
 ```
+
+**Note:** This example uses `/tmp/city/` as the accessible directory. You can replace it with your project path or add multiple directories.
 
 ### Step 2: Configure Directory Paths
 
@@ -152,6 +154,47 @@ You should see your `filesystem` server listed. If there are errors, check:
 - YAML syntax (proper indentation, no tabs)
 - Absolute paths are correct
 - Node.js is installed (`node --version`)
+
+### Step 4: Create Demo Data File (Optional)
+
+For this tutorial, we'll use `/tmp/city/` as our accessible directory. Create a demo data file to test with:
+
+```bash
+mkdir -p /tmp/city
+cat > /tmp/city/data.json << 'EOF'
+{
+  "users": [
+    {"id": 1, "name": "Alice", "email": "alice@example.com", "role": "admin"},
+    {"id": 2, "name": "Bob", "email": "bob@example.com", "role": "user"},
+    {"id": 3, "name": "Charlie", "email": "charlie@example.com", "role": "user"}
+  ],
+  "metadata": {
+    "total_users": 3,
+    "created_at": "2025-01-15",
+    "version": "1.0"
+  }
+}
+EOF
+```
+
+Or manually create `/tmp/city/data.json` with this content:
+
+```json
+{
+  "users": [
+    {"id": 1, "name": "Alice", "email": "alice@example.com", "role": "admin"},
+    {"id": 2, "name": "Bob", "email": "bob@example.com", "role": "user"},
+    {"id": 3, "name": "Charlie", "email": "charlie@example.com", "role": "user"}
+  ],
+  "metadata": {
+    "total_users": 3,
+    "created_at": "2025-01-15",
+    "version": "1.0"
+  }
+}
+```
+
+This demo file will be used in the examples below to demonstrate how MCP reads actual file structures for better code generation.
 
 ---
 
@@ -245,16 +288,57 @@ Things to try:
 5. **Check the raw error:** The CLI will now show detailed MCP error information
 6. **If it still fails:** Treat this tutorial as a reference pattern, not a guaranteed flow, and prefer the GitHub tutorial for production use
 
+### Step 3: Test with Demo Data File
+
+Now let's test reading the demo `data.json` file we created:
+
+```bash
+→ /mcp-call filesystem read_file {"path": "/tmp/city/data.json"}
+```
+
+Or if using relative path from the allowed directory:
+
+```bash
+→ /mcp-call filesystem read_file {"path": "data.json"}
+```
+
+You should see the JSON content with users and metadata. This demonstrates how MCP can read actual file structures.
+
+### Step 4: See How MCP Improves Code Generation
+
+Now that MCP can read your actual data file, try generating code that uses it:
+
+```text
+→ Create a module that processes the users in /tmp/city/data.json
+```
+
+**Without MCP:**
+- Code would use guessed field names like `data["items"]`, `data["info"]`
+- You'd need to manually fix field names to match your actual structure
+
+**With MCP:**
+- MCP reads the actual `data.json` file
+- Sees real structure: `{"users": [...], "metadata": {...}}`
+- Generates code with correct field names: `data["users"]`, `data["metadata"]`
+- Uses actual user fields: `user["id"]`, `user["name"]`, `user["email"]`, `user["role"]`
+- Code works immediately without manual fixes!
+
 ### Use it in natural-language requests
 
-After you’ve confirmed `/mcp-call` works, you can ask things like:
+After you've confirmed `/mcp-call` works, you can ask things like:
 
 ```text
 → Use the filesystem MCP to read `dspy_code/main.py` and
   explain what this file does at a high level.
 ```
 
-DSPy Code will use the MCP tools to fetch file contents and then let your model reason over them.
+Or with the demo data:
+
+```text
+→ Create a sentiment analyzer for the user data in /tmp/city/data.json
+```
+
+DSPy Code will use the MCP tools to fetch file contents and then let your model reason over them, generating code that matches your actual data structure.
 
 ---
 

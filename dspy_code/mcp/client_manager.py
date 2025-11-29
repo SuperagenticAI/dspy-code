@@ -273,16 +273,95 @@ class MCPClientManager:
         if server_name:
             # List tools from specific server
             session = await self._get_connected_session(server_name)
-            tools = await session.list_tools()
-            results[server_name] = tools
+            try:
+                tools = await session.list_tools()
+                results[server_name] = tools
+            except Exception as e:
+                # If session is closed (e.g., due to event loop closure), reconnect
+                # Check both the exception type and error message
+                error_type = type(e).__name__.lower()
+                error_str = str(e).lower()
+
+                # Check details dict if it's an MCPOperationError
+                details_error_type = ""
+                if hasattr(e, "details") and isinstance(e.details, dict):
+                    details_error_type = str(e.details.get("error_type", "")).lower()
+
+                is_closed_error = (
+                    "closed" in error_type
+                    or "closedresourceerror" in error_type
+                    or "closed" in error_str
+                    or "closedresourceerror" in error_str
+                    or "closed" in details_error_type
+                    or "closedresourceerror" in details_error_type
+                    or (
+                        hasattr(e, "__cause__")
+                        and e.__cause__ is not None
+                        and (
+                            "closed" in type(e.__cause__).__name__.lower()
+                            or "closedresourceerror" in type(e.__cause__).__name__.lower()
+                        )
+                    )
+                )
+
+                if is_closed_error:
+                    # Session was closed, remove it and reconnect
+                    if server_name in self.sessions:
+                        del self.sessions[server_name]
+                    # Reconnect
+                    await self.connect(server_name)
+                    session = await self._get_connected_session(server_name)
+                    tools = await session.list_tools()
+                    results[server_name] = tools
+                else:
+                    raise
         else:
             # List tools from all connected servers
-            for name, session in self.sessions.items():
+            for name, session in list(self.sessions.items()):
                 try:
                     tools = await session.list_tools()
                     results[name] = tools
                 except Exception as e:
-                    print(f"Warning: Failed to list tools from '{name}': {e}")
+                    # If session is closed, try to reconnect
+                    error_type = type(e).__name__.lower()
+                    error_str = str(e).lower()
+
+                    # Check details dict if it's an MCPOperationError
+                    details_error_type = ""
+                    if hasattr(e, "details") and isinstance(e.details, dict):
+                        details_error_type = str(e.details.get("error_type", "")).lower()
+
+                    is_closed_error = (
+                        "closed" in error_type
+                        or "closedresourceerror" in error_type
+                        or "closed" in error_str
+                        or "closedresourceerror" in error_str
+                        or "closed" in details_error_type
+                        or "closedresourceerror" in details_error_type
+                        or (
+                            hasattr(e, "__cause__")
+                            and e.__cause__ is not None
+                            and (
+                                "closed" in type(e.__cause__).__name__.lower()
+                                or "closedresourceerror" in type(e.__cause__).__name__.lower()
+                            )
+                        )
+                    )
+
+                    if is_closed_error:
+                        # Remove closed session and try to reconnect
+                        if name in self.sessions:
+                            del self.sessions[name]
+                        try:
+                            await self.connect(name)
+                            session = await self._get_connected_session(name)
+                            tools = await session.list_tools()
+                            results[name] = tools
+                        except Exception:
+                            # Reconnection failed, skip this server
+                            pass
+                    else:
+                        print(f"Warning: Failed to list tools from '{name}': {e}")
 
         return results
 
@@ -304,7 +383,42 @@ class MCPClientManager:
             MCPOperationError: If tool call fails
         """
         session = await self._get_connected_session(server_name)
-        return await session.call_tool(tool_name, arguments)
+        try:
+            return await session.call_tool(tool_name, arguments)
+        except Exception as e:
+            # If session is closed, reconnect and retry
+            error_type = type(e).__name__.lower()
+            error_str = str(e).lower()
+
+            # Check details dict if it's an MCPOperationError
+            details_error_type = ""
+            if hasattr(e, "details") and isinstance(e.details, dict):
+                details_error_type = str(e.details.get("error_type", "")).lower()
+
+            is_closed_error = (
+                "closed" in error_type
+                or "closedresourceerror" in error_type
+                or "closed" in error_str
+                or "closedresourceerror" in error_str
+                or "closed" in details_error_type
+                or "closedresourceerror" in details_error_type
+                or (
+                    hasattr(e, "__cause__")
+                    and e.__cause__ is not None
+                    and (
+                        "closed" in type(e.__cause__).__name__.lower()
+                        or "closedresourceerror" in type(e.__cause__).__name__.lower()
+                    )
+                )
+            )
+
+            if is_closed_error:
+                if server_name in self.sessions:
+                    del self.sessions[server_name]
+                await self.connect(server_name)
+                session = await self._get_connected_session(server_name)
+                return await session.call_tool(tool_name, arguments)
+            raise
 
     async def list_resources(
         self, server_name: str | None = None
