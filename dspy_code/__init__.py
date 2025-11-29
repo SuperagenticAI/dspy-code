@@ -5,5 +5,5 @@ This package provides tools for creating, managing, and optimizing DSPy componen
 through natural language interactions.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 __author__ = "DSPy Code Team"
