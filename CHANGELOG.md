@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.3] - 2025-01-XX
+
+### Fixed
+- **Critical Bug Fix**: Fixed duplicate code generation issue where natural language requests triggered code generation twice, causing unnecessary LLM API calls, high CPU usage, and duplicate code blocks in output
+- Removed duplicate code block in natural language processing path that was calling `_process_input()` twice for the same user input
+
+---
+
 ## [0.1.2] - 2025-01-XX
 
 ### Added
