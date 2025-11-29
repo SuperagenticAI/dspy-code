@@ -20,6 +20,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.2] - 2025-01-XX
+
+### Added
+- **MCP Integration**: Full Model Context Protocol (MCP) client support with commands for server management (`/mcp-servers`, `/mcp-connect`, `/mcp-disconnect`), tools (`/mcp-tools`, `/mcp-call`), resources (`/mcp-resources`, `/mcp-read`), and prompts (`/mcp-prompts`, `/mcp-prompt`)
+- **MCP Documentation**: Complete MCP guides and tutorials (overview, integration reference, filesystem assistant, GitHub triage)
+- **MCP Examples**: Working implementations for filesystem assistant and GitHub triage copilot, plus configuration examples
+- **MCP Configuration**: Support for stdio, SSE, and WebSocket transports with multiple directory access for filesystem server
+- **MCP Error Handling**: Auto-connect for `/mcp-tools`, detailed error messages with troubleshooting tips
+
+### Changed
+- `/mcp-tools` command now auto-connects to servers if not already connected
+- Improved MCP error messages and session management
+
+### Fixed
+- Fixed `/mcp-tools` command failing when server not connected
+- Improved error handling for MCP connection and configuration issues
+
+---
+
 ## [0.1.1] - 2025-11-27
 
 ### Added

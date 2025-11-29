@@ -1342,41 +1342,85 @@ class SlashCommandHandler:
         console.print()
 
         try:
-            tools_by_server = asyncio.run(self.mcp_manager.list_tools(server_name))
-
-            if not tools_by_server:
-                show_warning_message("No tools available")
-                console.print()
-                return
-
-            for srv_name, tools in tools_by_server.items():
-                table = Table(title=f"Tools from '{srv_name}'")
-                table.add_column("Name", style="cyan")
-                table.add_column("Description", style="white")
-
-                for tool in tools:
-                    table.add_row(tool.name, tool.description or "")
-
-                console.print(table)
-                console.print()
-
-                # Show detailed schema for each tool
-                console.print("[bold]Tool Schemas:[/bold]")
-                for tool in tools:
-                    console.print(f"\n[cyan]{tool.name}[/cyan]")
-                    if tool.description:
-                        console.print(f"  Description: {tool.description}")
-                    if hasattr(tool, "inputSchema") and tool.inputSchema:
-                        import json
-
-                        schema_str = json.dumps(tool.inputSchema, indent=2)
-                        console.print("  Schema:")
-                        console.print(f"  [dim]{schema_str}[/dim]")
-                    console.print()
-
-            console.print()
+            self._run_mcp_async(self._mcp_tools_async(server_name))
         except Exception as e:
-            show_error_message(f"Failed to list tools: {e}")
+            from ..mcp.exceptions import MCPError, format_mcp_error
+
+            # Use formatted error for MCP errors
+            if isinstance(e, MCPError):
+                error_msg = format_mcp_error(e, verbose=True)
+                show_error_message(error_msg)
+            else:
+                # For other exceptions, show the error with details
+                error_parts = [f"Failed to list tools: {str(e) or type(e).__name__}"]
+                if hasattr(e, "__cause__") and e.__cause__:
+                    error_parts.append(f"\nCause: {e.__cause__}")
+                show_error_message("\n".join(error_parts))
+                # Print traceback for debugging
+                import traceback
+                logger.debug("Error listing MCP tools", exc_info=True)
+
+    async def _mcp_tools_async(self, server_name: str | None):
+        """Async helper for MCP tools listing."""
+        from ..mcp.exceptions import MCPConnectionError, MCPOperationError
+
+        # Auto-connect if server is specified but not connected
+        if server_name:
+            session = await self.mcp_manager.get_session(server_name)
+            if not session:
+                show_info_message(f"Connecting to '{server_name}'...")
+                try:
+                    await self.mcp_manager.connect(server_name)
+                    show_success_message(f"Connected to '{server_name}'")
+                except MCPConnectionError as e:
+                    # Re-raise connection errors so they can be formatted properly
+                    raise
+                except Exception as e:
+                    # Wrap other connection errors
+                    from ..mcp.exceptions import MCPConnectionError as MCPConnErr
+                    raise MCPConnErr(
+                        f"Failed to connect to '{server_name}': {e}",
+                        server_name=server_name,
+                        details={"error": str(e), "error_type": type(e).__name__},
+                    )
+
+        try:
+            tools_by_server = await self.mcp_manager.list_tools(server_name)
+        except MCPOperationError:
+            # Re-raise operation errors so they can be formatted properly
+            raise
+
+        if not tools_by_server:
+            show_warning_message("No tools available")
+            console.print()
+            return
+
+        for srv_name, tools in tools_by_server.items():
+            table = Table(title=f"Tools from '{srv_name}'")
+            table.add_column("Name", style="cyan")
+            table.add_column("Description", style="white")
+
+            for tool in tools:
+                table.add_row(tool.name, tool.description or "")
+
+            console.print(table)
+            console.print()
+
+            # Show detailed schema for each tool
+            console.print("[bold]Tool Schemas:[/bold]")
+            for tool in tools:
+                console.print(f"\n[cyan]{tool.name}[/cyan]")
+                if tool.description:
+                    console.print(f"  Description: {tool.description}")
+                if hasattr(tool, "inputSchema") and tool.inputSchema:
+                    import json
+
+                    schema_str = json.dumps(tool.inputSchema, indent=2)
+                    console.print("  Schema:")
+                    console.print(f"  [dim]{schema_str}[/dim]")
+                console.print()
+
+        console.print()
 
     def cmd_mcp_call(self, args: list):
         """
