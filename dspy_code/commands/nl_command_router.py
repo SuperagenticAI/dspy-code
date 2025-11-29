@@ -502,10 +502,16 @@ class NLCommandRouter:
 
         user_input_lower = user_input.lower().strip()
 
+        # Check if user explicitly references a slash command (e.g., "/save", "/mcp-read")
+        # We need to distinguish between actual commands (like "/save") and file paths (like "/tmp/city")
+        # Slash commands typically appear as "/command" at word boundaries or standalone
+        slash_command_pattern = r'\b/(?:save|run|validate|connect|mcp-|init|help|status|clear|exit|optimize|eval|explain|model|models|data|examples|adapters|retrievers|demo|session)'
+        has_slash_command = re.search(slash_command_pattern, user_input_lower) is not None
+
         # For now, we are conservative: only attempt NL routing when the
-        # user *explicitly* references slash commands (\"/\"), otherwise
+        # user *explicitly* references slash commands, otherwise
         # we treat the input as a normal LLM request.
-        if "/" not in user_input_lower:
+        if not has_slash_command:
             logger.debug(
                 f"No explicit slash command reference in NL input, treating as normal LLM input: '{user_input}'"
             )
