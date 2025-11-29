@@ -50,4 +50,3 @@ Security updates will be released as patch versions (e.g., 0.1.1 → 0.1.2) and 
 * Keep dependencies up to date
 
 Thank you for helping keep DSPy Code secure! 🔒
-

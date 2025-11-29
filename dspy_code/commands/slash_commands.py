@@ -1357,7 +1357,6 @@ class SlashCommandHandler:
                     error_parts.append(f"\nCause: {e.__cause__}")
                 show_error_message("\n".join(error_parts))
                 # Print traceback for debugging
-                import traceback
                 logger.debug("Error listing MCP tools", exc_info=True)
 
     async def _mcp_tools_async(self, server_name: str | None):
@@ -1378,6 +1377,7 @@ class SlashCommandHandler:
                 except Exception as e:
                     # Wrap other connection errors
                     from ..mcp.exceptions import MCPConnectionError as MCPConnErr
+
                     raise MCPConnErr(
                         f"Failed to connect to '{server_name}': {e}",
                         server_name=server_name,
