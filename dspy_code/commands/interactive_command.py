@@ -289,20 +289,6 @@ class InteractiveSession:
 
                     self._process_input(user_input)
 
-                    # If no slash command match, process as natural language for code generation
-                    # But first check if model is connected
-                    if not self.llm_connector.current_model:
-                        console.print()
-                        show_warning_message("Model connection required for code generation.")
-                        console.print()
-                        console.print("[yellow]💡 Please connect to a model first:[/yellow]")
-                        console.print("  [cyan]/connect ollama llama3.1:8b[/cyan]")
-                        console.print("  [cyan]/models[/cyan] - See all available models")
-                        console.print()
-                        continue
-
-                    self._process_input(user_input)
-
                 except KeyboardInterrupt:
                     console.print("\n[yellow]Use 'exit' to quit[/yellow]")
                     continue
