@@ -508,18 +508,32 @@ class NLCommandRouter:
         slash_command_pattern = r'\b/(?:save|run|validate|connect|mcp-|init|help|status|clear|exit|optimize|eval|explain|model|models|data|examples|adapters|retrievers|demo|session)'
         has_slash_command = re.search(slash_command_pattern, user_input_lower) is not None
 
-        # For now, we are conservative: only attempt NL routing when the
-        # user *explicitly* references slash commands, otherwise
-        # we treat the input as a normal LLM request.
-        if not has_slash_command:
+        # Also check for natural language command patterns (without "/")
+        # This allows commands like "list mcp servers" to be routed
+        has_nl_command_pattern = False
+        for cmd_name, cmd_info in self.command_mappings.items():
+            for pattern in cmd_info.get("patterns", []):
+                if re.search(pattern, user_input_lower, re.IGNORECASE):
+                    has_nl_command_pattern = True
+                    break
+            if has_nl_command_pattern:
+                break
+
+        # Route if either:
+        # 1. User explicitly references a slash command (and it's not a file path)
+        # 2. User's input matches a natural language command pattern
+        if not has_slash_command and not has_nl_command_pattern:
             logger.debug(
-                f"No explicit slash command reference in NL input, treating as normal LLM input: '{user_input}'"
+                f"No command pattern match in NL input, treating as normal LLM input: '{user_input}'"
             )
             return None
 
-        # If the user mentions a specific slash command in natural language,
+        # If the user mentions a command (either slash or natural language),
         # allow the LLM router to decide whether to dispatch it.
-        logger.debug(f"Using LLM reasoning for explicit slash command reference: '{user_input}'")
+        if has_slash_command:
+            logger.debug(f"Using LLM reasoning for explicit slash command reference: '{user_input}'")
+        else:
+            logger.debug(f"Using LLM reasoning for natural language command pattern: '{user_input}'")
         return self._route_with_llm(user_input, context, pattern_matches=None)
 
     def _route_with_llm(
