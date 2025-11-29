@@ -30,8 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **MCP Error Handling**: Auto-connect for `/mcp-tools`, detailed error messages with troubleshooting tips
 
 ### Changed
+- **Default Performance Settings**: Fast mode now enabled by default, RAG disabled by default for faster initial responses
 - `/mcp-tools` command now auto-connects to servers if not already connected
 - Improved MCP error messages and session management
+- Welcome screen displays performance settings (RAG/Fast Mode status) with contextual tips
+- Code generation completion messages now include tips to enable RAG for better quality when disabled
 
 ### Fixed
 - Fixed `/mcp-tools` command failing when server not connected

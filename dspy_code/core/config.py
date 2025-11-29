@@ -42,9 +42,9 @@ class GepaConfig:
 class CodebaseRAGConfig:
     """Configuration for codebase RAG system."""
 
-    enabled: bool = True
+    enabled: bool = False  # Disabled by default for faster responses
     # Performance options
-    fast_mode: bool = False  # Skip RAG context building for faster responses
+    fast_mode: bool = True  # Enabled by default for faster responses
     skip_pattern_searches: bool = False  # Skip additional pattern-specific searches
     codebases: list[str] = field(default_factory=lambda: ["dspy-code", "dspy", "gepa"])
     cache_dir: str | None = None  # Defaults to .dspy_code/cache/codebase_index in CWD

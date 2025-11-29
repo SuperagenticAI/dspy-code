@@ -673,8 +673,8 @@ class SlashCommandHandler:
         # Performance Settings
         try:
             rag_config = self.config_manager.config.codebase_rag
-            rag_enabled = rag_config.enabled if rag_config else True
-            fast_mode = rag_config.fast_mode if rag_config else False
+            rag_enabled = rag_config.enabled if rag_config else False  # Default to disabled
+            fast_mode = rag_config.fast_mode if rag_config else True  # Default to enabled
 
             console.print("[bold]⚡ Performance Settings:[/bold]")
 
@@ -699,20 +699,24 @@ class SlashCommandHandler:
             # Show tips based on current settings
             if rag_enabled and not fast_mode:
                 console.print()
-                console.print("[dim]💡 Awesomeness takes time (but you can toggle anytime!)[/dim]")
-                console.print(
-                    "[dim]   Use [cyan]/fast-mode on[/cyan] for faster responses (0.5-1s)[/dim]"
-                )
+                console.print("[dim]💡 RAG enabled - better code quality, slower responses[/dim]")
+                console.print("[dim]   Use [cyan]/fast-mode on[/cyan] for faster responses[/dim]")
             elif not rag_enabled:
                 console.print()
-                console.print("[dim]💡 RAG disabled - faster startup, lower code quality[/dim]")
-                console.print("[dim]   Use [cyan]/enable-rag[/cyan] for better code quality[/dim]")
+                console.print(
+                    "[dim]💡 Fast mode ON, RAG disabled - quick responses, lower code quality[/dim]"
+                )
+                console.print(
+                    "[dim]   Use [cyan]/enable-rag[/cyan] and [cyan]/fast-mode off[/cyan] for better quality (slower)[/dim]"
+                )
             elif fast_mode:
                 console.print()
                 console.print(
                     "[dim]💡 Fast mode enabled - quick responses, slightly lower quality[/dim]"
                 )
-                console.print("[dim]   Use [cyan]/fast-mode off[/cyan] for better quality[/dim]")
+                console.print(
+                    "[dim]   Use [cyan]/enable-rag[/cyan] and [cyan]/fast-mode off[/cyan] for better quality (slower)[/dim]"
+                )
 
         except Exception as e:
             logger.debug(f"Error showing performance settings: {e}")
@@ -3116,7 +3120,7 @@ DSPy Code is your AI-powered assistant for building DSPy programs. It helps you:
             # Show status
             try:
                 rag_config = self.config_manager.config.codebase_rag
-                is_fast = rag_config.fast_mode if rag_config else False
+                is_fast = rag_config.fast_mode if rag_config else True  # Default to enabled
                 status = "enabled" if is_fast else "disabled"
                 console.print()
                 console.print(f"[cyan]Fast mode:[/cyan] {status}")

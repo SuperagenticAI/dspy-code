@@ -69,7 +69,7 @@ class CodebaseRAG:
     def _is_enabled(self) -> bool:
         """Check if RAG is enabled in config."""
         if not self.config_manager:
-            return True  # Default to enabled
+            return False  # Default to disabled for faster responses
 
         try:
             if hasattr(self.config_manager.config, "codebase_rag"):
@@ -79,7 +79,7 @@ class CodebaseRAG:
         except:
             pass
 
-        return True  # Default to enabled
+        return False  # Default to disabled for faster responses
 
     def search(self, query: str, top_k: int = 5, strategy: str = "hybrid") -> list[SearchResult]:
         """Search for relevant code snippets.

@@ -537,8 +537,8 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
         # Show RAG and Fast Mode status with humor
         try:
             rag_config = self.config_manager.config.codebase_rag
-            rag_enabled = rag_config.enabled if rag_config else True
-            fast_mode = rag_config.fast_mode if rag_config else False
+            rag_enabled = rag_config.enabled if rag_config else False  # Default to disabled
+            fast_mode = rag_config.fast_mode if rag_config else True  # Default to enabled
 
             # RAG status
             if self.codebase_rag and self.codebase_rag.enabled:
@@ -564,18 +564,20 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
             console.print(f"  {rag_status}")
             console.print(f"  {fast_status}")
 
-            # Add humorous message about quality vs speed
+            # Add message about quality vs speed
             if rag_enabled and not fast_mode:
                 console.print()
-                console.print("[dim]💡 Awesomeness takes time (but you can toggle anytime!)[/dim]")
+                console.print("[dim]💡 RAG enabled - better code quality, slower responses[/dim]")
                 console.print(
                     "[dim]   Use [cyan]/fast-mode on[/cyan] for faster responses or check [cyan]/status[/cyan] for details[/dim]"
                 )
             elif not rag_enabled:
                 console.print()
-                console.print("[dim]💡 RAG disabled - faster startup, lower code quality[/dim]")
                 console.print(
-                    "[dim]   Use [cyan]/enable-rag[/cyan] to enable or check [cyan]/status[/cyan] for details[/dim]"
+                    "[dim]💡 Fast mode ON, RAG disabled - quick responses, lower code quality[/dim]"
+                )
+                console.print(
+                    "[dim]   Use [cyan]/enable-rag[/cyan] and [cyan]/fast-mode off[/cyan] for better quality (slower)[/dim]"
                 )
             elif fast_mode:
                 console.print()
@@ -583,7 +585,7 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
                     "[dim]💡 Fast mode enabled - quick responses, slightly lower quality[/dim]"
                 )
                 console.print(
-                    "[dim]   Use [cyan]/fast-mode off[/cyan] for better quality or check [cyan]/status[/cyan] for details[/dim]"
+                    "[dim]   Use [cyan]/enable-rag[/cyan] and [cyan]/fast-mode off[/cyan] for better quality (slower)[/dim]"
                 )
         except Exception as e:
             logger.debug(f"Error showing performance status: {e}")
@@ -1024,6 +1026,9 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
         console.print("[dim]✓ Code ready - use [cyan]/save <filename>[/cyan] to save it[/dim]")
         console.print()
 
+        # Show RAG tip if disabled
+        self._show_rag_tip_if_needed()
+
         show_next_steps(
             [
                 "Type [cyan]/save <filename>[/cyan] to save this code",
@@ -1094,6 +1099,9 @@ Your AI-powered DSPy development assistant. Build, optimize, and learn DSPy with
         show_success_message("Complete program created!")
         console.print("[dim]✓ Code ready - use [cyan]/save <filename>[/cyan] to save it[/dim]")
         console.print()
+
+        # Show RAG tip if disabled
+        self._show_rag_tip_if_needed()
 
         show_next_steps(
             [
@@ -1814,6 +1822,10 @@ Be conversational, helpful, and use the context to provide accurate information.
                 self.current_context["type"] = "module"
                 show_code_panel(code, "Generated DSPy Code", "python")
                 show_success_message("Code generated!")
+
+                # Show RAG tip if disabled
+                self._show_rag_tip_if_needed()
+
                 show_next_steps(
                     [
                         "Type [cyan]/save <filename>[/cyan] to save this code",
@@ -2037,9 +2049,38 @@ Be conversational, helpful, and use the context to provide accurate information.
         """Check if fast mode is enabled."""
         try:
             rag_config = self.config_manager.config.codebase_rag
-            return rag_config.fast_mode if rag_config else False
+            return rag_config.fast_mode if rag_config else True  # Default to enabled
         except:
-            return False
+            return True  # Default to enabled
+
+    def _show_rag_tip_if_needed(self):
+        """Show tip to enable RAG if it's disabled."""
+        # Only show once per session
+        if hasattr(self, "_rag_tip_shown"):
+            return
+
+        try:
+            rag_config = self.config_manager.config.codebase_rag
+            rag_enabled = rag_config.enabled if rag_config else False
+            fast_mode = rag_config.fast_mode if rag_config else True
+
+            # Only show if RAG is disabled
+            if rag_enabled:
+                return
+
+            console.print()
+            console.print(
+                "[yellow]💡 Tip:[/yellow] Want better code quality? "
+                "[cyan]/enable-rag[/cyan] and [cyan]/fast-mode off[/cyan] "
+                "(slower but more accurate)"
+            )
+            console.print("[dim]   Current: Fast mode ON, RAG OFF - quick responses[/dim]")
+            console.print("[dim]   Better: RAG ON, Fast mode OFF - slower but higher quality[/dim]")
+            console.print()
+
+            self._rag_tip_shown = True
+        except Exception:
+            pass
 
     def _show_performance_tip_if_needed(self, generation_time: float):
         """Show performance tip after slow response."""
@@ -3506,6 +3547,43 @@ def _show_welcome_screen(console, context, config_manager):
     )
     console.print(Align.center(model_info))
     console.print()
+
+    # Show RAG and Fast Mode status
+    try:
+        if config_manager:
+            rag_config = config_manager.config.codebase_rag
+            rag_enabled = rag_config.enabled if rag_config else False  # Default to disabled
+            fast_mode = rag_config.fast_mode if rag_config else True  # Default to enabled
+
+            # Performance status using Rich Text properly
+            perf_text = Text()
+            perf_text.append("⚡ Performance: ", style="dim")
+            perf_text.append("RAG ", style="dim")
+            if rag_enabled:
+                perf_text.append("ON", style="bold green")
+            else:
+                perf_text.append("OFF", style="bold red")
+            perf_text.append(" | Fast Mode ", style="dim")
+            if fast_mode:
+                perf_text.append("ON", style="bold green")
+            else:
+                perf_text.append("OFF", style="bold yellow")
+            console.print(Align.center(perf_text))
+            console.print()
+
+            # Show tip based on current settings
+            if not rag_enabled:
+                tip_text = Text()
+                tip_text.append("💡 ", style="yellow")
+                tip_text.append("Quick responses | ", style="dim")
+                tip_text.append("Enable RAG for better quality: ", style="dim")
+                tip_text.append("/enable-rag", style="cyan")
+                tip_text.append(" + ", style="dim")
+                tip_text.append("/fast-mode off", style="cyan")
+                console.print(Align.center(tip_text))
+                console.print()
+    except Exception:
+        pass
 
     # Minimal help
     console.print("[dim]Type /help for commands or describe what you want to build[/dim]")

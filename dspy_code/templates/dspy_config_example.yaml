@@ -261,8 +261,12 @@ caching:
 # This indexes source code from installed packages to provide better code examples
 
 codebase_rag:
-  # Enable/disable codebase RAG
-  enabled: true
+  # Enable/disable codebase RAG (disabled by default for faster responses)
+  enabled: false
+
+  # Performance options
+  # Fast mode: Skip RAG context building for faster responses (enabled by default)
+  fast_mode: true
 
   # Codebases to index
   # Options: dspy-code, dspy, gepa, mcp
