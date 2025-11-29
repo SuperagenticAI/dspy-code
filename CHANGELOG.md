@@ -12,9 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Plan / Code modes** in interactive CLI (explicit "planning" vs "coding" flows for complex tasks).
   - First‑class support for **open‑source models via third‑party providers** (e.g. OpenRouter, Groq and similar gateways), alongside existing Ollama + cloud integrations.
 
-### Changed
-- Intent routing to further reduce/eliminate **duplicate code generation**, especially with large open‑source models and remote providers.
-
 ### Fixed
 - TBC
 
