@@ -8,6 +8,7 @@ from pathlib import Path
 from .models import IssueCategory, IssueSeverity, QualityMetrics, ValidationIssue, ValidationReport
 from .module_validator import ModuleValidator
 from .predictor_validator import PredictorValidator
+from .security import SecurityValidator
 from .signature_validator import SignatureValidator
 
 
@@ -19,6 +20,7 @@ class DSPyValidator:
         self.signature_validator = SignatureValidator()
         self.module_validator = ModuleValidator()
         self.predictor_validator = PredictorValidator()
+        self.security_validator = SecurityValidator()
         self.validators = []
         # Will be populated with specific validators
 
@@ -164,6 +166,10 @@ class DSPyValidator:
         # Validate predictor usage
         predictor_issues = self.predictor_validator.validate(tree, code.split("\n"))
         report.issues.extend(predictor_issues)
+
+        # Security validation
+        security_issues = self.security_validator.validate(code)
+        report.issues.extend(security_issues)
 
         return report
 

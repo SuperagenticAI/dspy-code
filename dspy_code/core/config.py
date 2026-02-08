@@ -19,11 +19,11 @@ class ModelConfig:
     ollama_endpoint: str | None = "http://localhost:11434"
     ollama_models: list[str] = field(default_factory=list)
     anthropic_api_key: str | None = None
-    anthropic_model: str = "claude-4.5-sonnet"
+    anthropic_model: str = "claude-sonnet-4-20250514"  # Current Claude Sonnet model
     openai_api_key: str | None = None
-    openai_model: str = "gpt-5.1"
+    openai_model: str = "gpt-4o"  # Current GPT-4o model
     gemini_api_key: str | None = None
-    gemini_model: str = "gemini-pro-2.5"
+    gemini_model: str = "gemini-2.0-flash"  # Current Gemini Flash model
     reflection_model: str | None = None  # Model for GEPA reflection (defaults to default_model)
 
 
@@ -36,6 +36,42 @@ class GepaConfig:
     mutation_rate: float = 0.1
     crossover_rate: float = 0.8
     evaluation_metric: str = "accuracy"
+
+
+@dataclass
+class QualityScoringConfig:
+    """Configuration for quality scoring thresholds."""
+
+    error_penalty: int = 20  # Points deducted per error
+    warning_penalty: int = 5  # Points deducted per warning
+    min_documentation_score: int = 75  # Default documentation score
+    min_optimization_score: int = 70  # Default optimization readiness score
+    grade_thresholds: dict[str, int] = field(default_factory=lambda: {
+        "A": 90,
+        "B": 80,
+        "C": 70,
+        "D": 60,
+        "F": 0,
+    })
+
+
+@dataclass
+class RetryConfig:
+    """Configuration for retry behavior."""
+
+    max_attempts: int = 3
+    base_delay: float = 1.0
+    max_delay: float = 30.0
+    exponential_base: float = 2.0
+
+
+@dataclass
+class CacheConfig:
+    """Configuration for code generation cache."""
+
+    enabled: bool = True
+    max_size: int = 100
+    ttl_seconds: int = 3600
 
 
 @dataclass
@@ -84,6 +120,9 @@ class ProjectConfig:
     default_model: str | None = None
     gepa_config: GepaConfig = field(default_factory=GepaConfig)
     codebase_rag: CodebaseRAGConfig = field(default_factory=CodebaseRAGConfig)
+    quality_scoring: QualityScoringConfig = field(default_factory=QualityScoringConfig)
+    retry_config: RetryConfig = field(default_factory=RetryConfig)
+    cache_config: CacheConfig = field(default_factory=CacheConfig)
     output_directory: str = "generated"
     template_preferences: dict[str, Any] = field(default_factory=dict)
     mcp_servers: dict[str, dict[str, Any]] = field(default_factory=dict)
@@ -108,6 +147,12 @@ class ProjectConfig:
                 data["gepa_config"] = GepaConfig(**data["gepa_config"])
             if "codebase_rag" in data:
                 data["codebase_rag"] = CodebaseRAGConfig(**data["codebase_rag"])
+            if "quality_scoring" in data:
+                data["quality_scoring"] = QualityScoringConfig(**data["quality_scoring"])
+            if "retry_config" in data:
+                data["retry_config"] = RetryConfig(**data["retry_config"])
+            if "cache_config" in data:
+                data["cache_config"] = CacheConfig(**data["cache_config"])
 
             # Ensure mcp_servers exists and is a dict
             if "mcp_servers" not in data or data["mcp_servers"] is None:
@@ -160,6 +205,9 @@ class ProjectConfig:
                 "default_model",
                 "gepa_config",
                 "codebase_rag",
+                "quality_scoring",
+                "retry_config",
+                "cache_config",
                 "output_directory",
                 "template_preferences",
                 "mcp_servers",

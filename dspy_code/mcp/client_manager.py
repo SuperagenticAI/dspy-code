@@ -17,7 +17,9 @@ from .exceptions import (
     MCPConnectionError,
     MCPOperationError,
 )
+from .retry import RetryConfig, RetryController
 from .session_wrapper import MCPSessionWrapper
+from .utils import is_closed_connection_error
 
 
 class MCPClientManager:
@@ -28,17 +30,19 @@ class MCPClientManager:
     operations to appropriate servers.
     """
 
-    def __init__(self, config_manager: ConfigManager):
+    def __init__(self, config_manager: ConfigManager, retry_config: RetryConfig | None = None):
         """
         Initialize the MCP client manager.
 
         Args:
             config_manager: DSPy Code configuration manager
+            retry_config: Optional retry configuration for connection attempts
         """
         self.config_manager = config_manager
         self.sessions: dict[str, MCPSessionWrapper] = {}
         self.server_configs: dict[str, MCPServerConfig] = {}
         self._exit_stack: AsyncExitStack | None = None
+        self._retry_controller = RetryController(retry_config or RetryConfig())
         self._load_server_configs()
 
     def _load_server_configs(self) -> None:
@@ -133,12 +137,13 @@ class MCPClientManager:
 
         return servers
 
-    async def connect(self, server_name: str) -> MCPSessionWrapper:
+    async def connect(self, server_name: str, use_retry: bool = True) -> MCPSessionWrapper:
         """
-        Connect to an MCP server.
+        Connect to an MCP server with optional retry.
 
         Args:
             server_name: Name of server to connect to
+            use_retry: Whether to use retry logic for transient failures
 
         Returns:
             MCPSessionWrapper for the connected session
@@ -166,6 +171,36 @@ class MCPClientManager:
                 server_name=server_name,
                 transport_type=config.transport.type,
             )
+
+        if use_retry:
+            import logging
+            logger = logging.getLogger(__name__)
+            
+            def on_retry(attempt: int, error: Exception, delay: float) -> None:
+                logger.info(
+                    f"MCP connection to '{server_name}' failed (attempt {attempt}). "
+                    f"Retrying in {delay:.1f}s..."
+                )
+            
+            return await self._retry_controller.execute_with_retry(
+                lambda: self._connect_internal(server_name, config),
+                operation_name=f"connect({server_name})",
+                on_retry=on_retry,
+            )
+        else:
+            return await self._connect_internal(server_name, config)
+
+    async def _connect_internal(self, server_name: str, config: MCPServerConfig) -> MCPSessionWrapper:
+        """
+        Internal connection logic without retry.
+
+        Args:
+            server_name: Name of server to connect to
+            config: Server configuration
+
+        Returns:
+            MCPSessionWrapper for the connected session
+        """
 
         try:
             # Create exit stack if not exists
@@ -277,38 +312,10 @@ class MCPClientManager:
                 tools = await session.list_tools()
                 results[server_name] = tools
             except Exception as e:
-                # If session is closed (e.g., due to event loop closure), reconnect
-                # Check both the exception type and error message
-                error_type = type(e).__name__.lower()
-                error_str = str(e).lower()
-
-                # Check details dict if it's an MCPOperationError
-                details_error_type = ""
-                if hasattr(e, "details") and isinstance(e.details, dict):
-                    details_error_type = str(e.details.get("error_type", "")).lower()
-
-                is_closed_error = (
-                    "closed" in error_type
-                    or "closedresourceerror" in error_type
-                    or "closed" in error_str
-                    or "closedresourceerror" in error_str
-                    or "closed" in details_error_type
-                    or "closedresourceerror" in details_error_type
-                    or (
-                        hasattr(e, "__cause__")
-                        and e.__cause__ is not None
-                        and (
-                            "closed" in type(e.__cause__).__name__.lower()
-                            or "closedresourceerror" in type(e.__cause__).__name__.lower()
-                        )
-                    )
-                )
-
-                if is_closed_error:
-                    # Session was closed, remove it and reconnect
+                # If session is closed, reconnect and retry
+                if is_closed_connection_error(e):
                     if server_name in self.sessions:
                         del self.sessions[server_name]
-                    # Reconnect
                     await self.connect(server_name)
                     session = await self._get_connected_session(server_name)
                     tools = await session.list_tools()
@@ -323,33 +330,7 @@ class MCPClientManager:
                     results[name] = tools
                 except Exception as e:
                     # If session is closed, try to reconnect
-                    error_type = type(e).__name__.lower()
-                    error_str = str(e).lower()
-
-                    # Check details dict if it's an MCPOperationError
-                    details_error_type = ""
-                    if hasattr(e, "details") and isinstance(e.details, dict):
-                        details_error_type = str(e.details.get("error_type", "")).lower()
-
-                    is_closed_error = (
-                        "closed" in error_type
-                        or "closedresourceerror" in error_type
-                        or "closed" in error_str
-                        or "closedresourceerror" in error_str
-                        or "closed" in details_error_type
-                        or "closedresourceerror" in details_error_type
-                        or (
-                            hasattr(e, "__cause__")
-                            and e.__cause__ is not None
-                            and (
-                                "closed" in type(e.__cause__).__name__.lower()
-                                or "closedresourceerror" in type(e.__cause__).__name__.lower()
-                            )
-                        )
-                    )
-
-                    if is_closed_error:
-                        # Remove closed session and try to reconnect
+                    if is_closed_connection_error(e):
                         if name in self.sessions:
                             del self.sessions[name]
                         try:
@@ -387,32 +368,7 @@ class MCPClientManager:
             return await session.call_tool(tool_name, arguments)
         except Exception as e:
             # If session is closed, reconnect and retry
-            error_type = type(e).__name__.lower()
-            error_str = str(e).lower()
-
-            # Check details dict if it's an MCPOperationError
-            details_error_type = ""
-            if hasattr(e, "details") and isinstance(e.details, dict):
-                details_error_type = str(e.details.get("error_type", "")).lower()
-
-            is_closed_error = (
-                "closed" in error_type
-                or "closedresourceerror" in error_type
-                or "closed" in error_str
-                or "closedresourceerror" in error_str
-                or "closed" in details_error_type
-                or "closedresourceerror" in details_error_type
-                or (
-                    hasattr(e, "__cause__")
-                    and e.__cause__ is not None
-                    and (
-                        "closed" in type(e.__cause__).__name__.lower()
-                        or "closedresourceerror" in type(e.__cause__).__name__.lower()
-                    )
-                )
-            )
-
-            if is_closed_error:
+            if is_closed_connection_error(e):
                 if server_name in self.sessions:
                     del self.sessions[server_name]
                 await self.connect(server_name)

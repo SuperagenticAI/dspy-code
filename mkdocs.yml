@@ -87,6 +87,21 @@ plugins:
       lang: en
   - minify:
       minify_html: true
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            docstring_style: google
+            docstring_section_style: spacy
+            merge_init_into_class: true
+            show_signature_annotations: true
+            separate_signature: true
 
 extra_css:
   - stylesheets/extra.css
@@ -141,12 +156,18 @@ nav:
     - 🐙 MCP GitHub Triage Copilot: tutorials/mcp-github-triage.md
 
   - 📖 Reference:
+    - 🏗️ Architecture: reference/architecture.md
     - 📝 Command Reference: reference/commands.md
     - ⚙️ Configuration: reference/configuration.md
     - 🔒 Security & Best Practices: reference/security.md
     - 📋 Templates: reference/templates.md
     - 🔧 Troubleshooting: reference/troubleshooting.md
     - ❓ FAQ: reference/faq.md
+    - 📚 API Reference:
+      - Core: reference/api/core.md
+      - Models: reference/api/models.md
+      - MCP: reference/api/mcp.md
+      - Validation: reference/api/validation.md
 
   - 🚀 Advanced:
     - 🔗 MCP Integration: advanced/mcp-integration.md
@@ -154,9 +175,12 @@ nav:
     - 🚢 Deployment: advanced/deployment.md
     - 🔄 CI/CD Integration: advanced/cicd.md
 
+  - 👩‍💻 Contributing:
+    - 🚀 Getting Started: contributing/getting-started.md
+    - 🤝 Contributing Guide: about/contributing.md
+
   - ℹ️ About:
     - 📖 About DSPy Code: about/index.md
     - 💡 Why DSPy Code?: about/why-dspy-code.md
     - 📝 Changelog: about/changelog.md
-    - 🤝 Contributing: about/contributing.md
     - 📄 License: about/license.md

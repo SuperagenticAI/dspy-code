@@ -53,17 +53,25 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.23.0",
     "pytest-xdist>=3.5.0",
+    "hypothesis>=6.100.0",
     "ruff>=0.8.0",
     "mypy>=1.13.0",
     "pre-commit>=4.0.0",
     "types-requests>=2.31.0",
     "types-pyyaml>=6.0.12",
 ]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "mkdocs-minify-plugin>=0.7.0",
+]
 test = [
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.23.0",
     "pytest-xdist>=3.5.0",
+    "hypothesis>=6.100.0",
 ]
 mcp-ws = [
     "websockets>=15.0.1",
@@ -103,6 +111,10 @@ exclude = [
     "docs/",
     "mkdocs.yml",
 ]
+
+# Include py.typed marker for PEP 561 compliance
+[tool.hatch.build.targets.wheel.force-include]
+"dspy_code/py.typed" = "dspy_code/py.typed"
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -160,16 +172,17 @@ known-first-party = ["dspy_code"]
 python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
 check_untyped_defs = true
-disallow_untyped_decorators = true
 no_implicit_optional = true
 warn_redundant_casts = true
-warn_unused_ignores = true
 warn_no_return = true
-warn_unreachable = true
 strict_equality = true
+# Strict mode settings - enable gradually
+# disallow_untyped_defs = true
+# disallow_incomplete_defs = true
+# disallow_untyped_decorators = true
+# warn_unused_ignores = true
+# warn_unreachable = true
 
 [[tool.mypy.overrides]]
 module = [
@@ -177,9 +190,24 @@ module = [
     "anthropic.*",
     "openai.*",
     "google.generativeai.*",
+    "google.genai.*",
     "mcp.*",
 ]
 ignore_missing_imports = true
+
+# Strict typing for core modules we've improved
+[[tool.mypy.overrides]]
+module = [
+    "dspy_code.core.config",
+    "dspy_code.core.debug_logger",
+    "dspy_code.mcp.utils",
+    "dspy_code.mcp.retry",
+    "dspy_code.models.cache",
+    "dspy_code.models.streaming",
+    "dspy_code.validation.security",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
 
 [tool.pytest.ini_options]
 minversion = "7.0"

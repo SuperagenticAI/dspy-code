@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from rich.console import Console
 
 from ..core.logging import get_logger
+from .cache import CacheConfig, CodeGenerationCache
 from .task_collector import GoldExample, ReasoningPattern, TaskDefinition
 
 console = Console()
@@ -30,11 +31,16 @@ class GeneratedProgram:
 class CodeGenerator:
     """Generates DSPy code from task definitions."""
 
-    def __init__(self, model_manager):
+    def __init__(self, model_manager, cache_config: CacheConfig | None = None):
         self.model_manager = model_manager
+        self._cache = CodeGenerationCache(cache_config)
 
     def generate_from_task(
-        self, task_def: TaskDefinition, examples: list[GoldExample], pattern: ReasoningPattern
+        self,
+        task_def: TaskDefinition,
+        examples: list[GoldExample],
+        pattern: ReasoningPattern,
+        use_cache: bool = True,
     ) -> GeneratedProgram:
         """
         Generate complete DSPy program from task definition.
@@ -43,10 +49,18 @@ class CodeGenerator:
             task_def: Task definition
             examples: Gold examples
             pattern: Reasoning pattern
+            use_cache: Whether to use cache (set False for fresh generation)
 
         Returns:
             Generated program
         """
+        # Check cache first (if enabled and requested)
+        if use_cache:
+            cached = self._cache.get(task_def, pattern)
+            if cached is not None:
+                logger.info(f"Cache hit for task: {task_def.description}")
+                return cached
+
         logger.info(f"Generating DSPy program for task: {task_def.description}")
 
         # Generate signature
@@ -67,7 +81,7 @@ class CodeGenerator:
         # Generate usage examples
         usage_examples = self._generate_usage_examples(task_def, examples)
 
-        return GeneratedProgram(
+        result = GeneratedProgram(
             signature_code=signature_code,
             module_code=module_code,
             program_code=program_code,
@@ -77,6 +91,12 @@ class CodeGenerator:
             examples=usage_examples,
             reasoning_pattern=pattern,
         )
+
+        # Cache the result
+        if use_cache:
+            self._cache.put(task_def, pattern, result)
+
+        return result
 
     def _generate_signature(self, task_def: TaskDefinition) -> str:
         """Generate DSPy signature from task definition."""
@@ -129,9 +149,33 @@ def search_tool(query: str) -> str:
     return f"Search results for: {{query}}"
 
 def calculator_tool(expression: str) -> str:
-    """Evaluate mathematical expressions."""
+    """Evaluate simple mathematical expressions safely."""
+    import ast
+    import operator
+    
+    # Safe operators for basic math
+    ops = {{
+        ast.Add: operator.add,
+        ast.Sub: operator.sub,
+        ast.Mult: operator.mul,
+        ast.Div: operator.truediv,
+        ast.Pow: operator.pow,
+        ast.USub: operator.neg,
+    }}
+    
+    def safe_eval(node):
+        if isinstance(node, ast.Constant):
+            return node.value
+        elif isinstance(node, ast.BinOp):
+            return ops[type(node.op)](safe_eval(node.left), safe_eval(node.right))
+        elif isinstance(node, ast.UnaryOp):
+            return ops[type(node.op)](safe_eval(node.operand))
+        else:
+            raise ValueError(f"Unsupported operation")
+    
     try:
-        result = eval(expression, {{"__builtins__": {{}}}}, {{}})
+        tree = ast.parse(expression, mode='eval')
+        result = safe_eval(tree.body)
         return f"Result: {{result}}"
     except Exception as e:
         return f"Error: {{str(e)}}"
