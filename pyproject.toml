@@ -74,7 +74,7 @@ openai = [
 ]
 anthropic = [
     # Recent stable anthropic client
-    "anthropic>=0.39.0,<1.0.0",
+    "anthropic>=0.39.0,<2.0.0",
 ]
 gemini = [
     # Official Google Gen AI SDK (Gemini Developer API + Vertex AI)
@@ -83,7 +83,7 @@ gemini = [
 ]
 llm-all = [
     "openai>=2.8.1,<3.0.0",
-    "anthropic>=0.39.0,<1.0.0",
+    "anthropic>=0.39.0,<2.0.0",
     "google-genai>=1.52.0,<2.0.0",
 ]
 
