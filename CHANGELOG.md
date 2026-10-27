@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - First‑class support for **open‑source models via third‑party providers** (e.g. OpenRouter, Groq and similar gateways), alongside existing Ollama + cloud integrations.
 
 ### Fixed
-- TBC
+- Reject Python keywords as field names before generating DSPy signatures.
 
 ---
 

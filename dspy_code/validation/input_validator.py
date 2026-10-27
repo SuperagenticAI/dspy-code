@@ -4,6 +4,7 @@ Input validation for task collection.
 Provides validation methods for user input during interactive task collection.
 """
 
+import keyword
 from typing import Any
 
 
@@ -27,7 +28,7 @@ class InputValidator:
 
         # Check for valid Python identifier
         name = name.strip()
-        if not name.isidentifier():
+        if not name.isidentifier() or keyword.iskeyword(name):
             raise ValidationError(f"'{name}' is not a valid Python identifier")
 
         return name
